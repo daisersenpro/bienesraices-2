@@ -1,69 +1,180 @@
-import Image from "next/image";
+"use client";
+
+import { FormEvent, useMemo, useState } from "react";
+import { PropertyCard } from "./components/property-card";
+import { featuredProperties, newProperties } from "./data/properties";
+
+const categories = [
+  { value: "All", label: "Todas" },
+  { value: "House", label: "Casas" },
+  { value: "Apartment", label: "Apartamentos" },
+  { value: "Villa", label: "Villas" },
+  { value: "Penthouse", label: "Áticos" },
+] as const;
+type Category = (typeof categories)[number]["value"];
 
 export default function Home() {
+  const [category, setCategory] = useState<Category>("All");
+  const [query, setQuery] = useState("");
+  const [submittedQuery, setSubmittedQuery] = useState("");
+
+  const filteredProperties = useMemo(() => {
+    const normalizedQuery = submittedQuery.trim().toLowerCase();
+    return newProperties.filter((property) => {
+      const matchesCategory = category === "All" || property.type === category;
+      const matchesQuery =
+        !normalizedQuery ||
+        `${property.name} ${property.location}`.toLowerCase().includes(normalizedQuery);
+      return matchesCategory && matchesQuery;
+    });
+  }, [category, submittedQuery]);
+
+  function handleSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSubmittedQuery(query);
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <>
+      <nav className="sticky top-0 z-50 border-b border-nordic/10 bg-background/95 backdrop-blur-md">
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <a href="#" className="flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-nordic text-lg text-white">⌂</span>
+            <span className="text-xl font-semibold tracking-tight text-nordic">Casas SenPro</span>
+          </a>
+          <div className="hidden items-center space-x-8 md:flex">
+            <a href="#" className="border-b-2 border-mosque px-1 py-1 text-sm font-medium text-mosque">Comprar</a>
+            <a href="#new-in-market" className="px-1 py-1 text-sm font-medium text-nordic/70 transition-colors hover:text-nordic">Alquilar</a>
+            <a href="#" className="px-1 py-1 text-sm font-medium text-nordic/70 transition-colors hover:text-nordic">Vender</a>
+            <a href="#" className="px-1 py-1 text-sm font-medium text-nordic/70 transition-colors hover:text-nordic">Favoritos</a>
+          </div>
+          <div className="flex items-center gap-5 text-xl text-nordic">
+            <button type="button" aria-label="Buscar">⌕</button>
+            <button type="button" aria-label="Notificaciones" className="relative">♧<span className="absolute -right-1 top-0 h-2 w-2 rounded-full bg-red-500" /></button>
+            <button type="button" aria-label="Perfil" className="hidden h-9 w-9 items-center justify-center rounded-full bg-hint text-sm font-semibold sm:flex">CS</button>
+          </div>
+        </div>
+      </nav>
+      <main className="mx-auto w-full max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
+      <section className="py-12 md:py-16">
+        <div className="mx-auto max-w-3xl space-y-8 text-center">
+          <h1 className="text-4xl font-light leading-tight tracking-tight text-nordic md:text-5xl lg:text-6xl">
+            Encuentra tu{" "}
+            <span className="relative inline-block">
+              <span className="relative z-10 font-medium">hogar ideal</span>
+              <span className="absolute bottom-2 left-0 z-0 h-3 w-full -rotate-1 bg-mosque/20" />
+            </span>
+            .
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+          <form onSubmit={handleSearch} className="relative mx-auto max-w-2xl">
+            <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-2xl text-muted">
+              ⌕
+            </span>
+            <input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              className="block w-full rounded-xl border-0 bg-white py-4 pl-12 pr-32 text-lg text-nordic shadow-soft outline-none placeholder:text-muted/60 focus:ring-2 focus:ring-mosque"
+              placeholder="Busca por ciudad, barrio o dirección..."
+              aria-label="Buscar propiedades"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <button
+              type="submit"
+              className="absolute inset-y-2 right-2 rounded-lg bg-mosque px-6 font-medium text-white shadow-lg shadow-mosque/20 transition-colors hover:bg-nordic"
+            >
+              Buscar
+            </button>
+          </form>
+          <div className="hide-scroll flex items-center justify-start gap-3 overflow-x-auto py-2 px-1 sm:justify-center">
+            {categories.map((item) => (
+              <button
+                key={item.value}
+                type="button"
+                onClick={() => setCategory(item.value)}
+                className={`whitespace-nowrap rounded-full px-5 py-2 text-sm font-medium transition-all ${
+                  category === item.value
+                    ? "bg-nordic text-white shadow-lg shadow-nordic/10"
+                    : "border border-nordic/10 bg-white text-muted hover:border-mosque/50 hover:text-nordic"
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+            <span className="mx-2 h-6 w-px shrink-0 bg-nordic/10" />
+            <button type="button" className="whitespace-nowrap px-2 py-2 text-sm font-medium text-nordic transition-colors hover:text-mosque">
+              ⚙ Filtros
+            </button>
+          </div>
         </div>
+      </section>
+
+      <section className="mb-16">
+        <SectionHeading title="Colecciones destacadas" description="Propiedades seleccionadas para una mirada exigente." linkText="Ver todas" />
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+          {featuredProperties.map((property) => (
+            <FeaturedProperty key={property.id} property={property} />
+          ))}
+        </div>
+      </section>
+
+      <section id="new-in-market">
+        <SectionHeading title="Novedades del mercado" description="Nuevas oportunidades añadidas esta semana." />
+        <div className="mb-6 flex gap-1 rounded-lg bg-white p-1 md:hidden">
+          <span className="rounded-md bg-nordic px-4 py-1.5 text-sm font-medium text-white">Todas</span>
+          <span className="px-4 py-1.5 text-sm font-medium text-muted">Comprar</span>
+          <span className="px-4 py-1.5 text-sm font-medium text-muted">Alquilar</span>
+        </div>
+        {filteredProperties.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {filteredProperties.map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-2xl bg-white px-6 py-16 text-center shadow-card">
+            <p className="font-medium text-nordic">No encontramos propiedades</p>
+            <p className="mt-1 text-sm text-muted">Prueba con otra ubicación o tipo de propiedad.</p>
+          </div>
+        )}
+      </section>
       </main>
+    </>
+  );
+}
+
+function SectionHeading({ title, description, linkText }: { title: string; description: string; linkText?: string }) {
+  return (
+    <div className="mb-8 flex items-end justify-between">
+      <div>
+        <h2 className="text-2xl font-light text-nordic">{title}</h2>
+        <p className="mt-1 text-sm text-muted">{description}</p>
+      </div>
+      {linkText && <button type="button" className="hidden items-center gap-1 text-sm font-medium text-mosque transition-opacity hover:opacity-70 sm:flex">{linkText} →</button>}
     </div>
+  );
+}
+
+function FeaturedProperty({ property }: { property: (typeof featuredProperties)[number] }) {
+  return (
+    <article className="group overflow-hidden rounded-2xl bg-white shadow-soft">
+      <div className="relative aspect-[4/3] overflow-hidden">
+        <img src={property.image} alt={`${property.name}, ${property.location}`} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+        <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-nordic">{property.label}</span>
+        <span className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-black/50 to-transparent" />
+      </div>
+      <div className="p-6">
+        <div className="mb-2 flex items-start justify-between gap-4">
+          <div>
+            <h3 className="text-xl font-medium text-nordic transition-colors group-hover:text-mosque">{property.name}</h3>
+            <p className="mt-1 text-sm text-muted">⌖ {property.location}</p>
+          </div>
+          <span className="text-right text-xl font-semibold text-mosque">{property.price}</span>
+        </div>
+        <div className="mt-6 flex items-center gap-4 border-t border-nordic/10 pt-6 text-sm text-muted sm:gap-6">
+          <span>⌂ {property.beds}</span>
+          <span>◉ {property.baths}</span>
+          <span>□ {property.area}</span>
+        </div>
+      </div>
+    </article>
   );
 }
