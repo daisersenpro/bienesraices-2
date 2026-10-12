@@ -4,7 +4,8 @@ import type { Property } from "./properties";
 const PAGE_SIZE = 8;
 
 type PropertyRow = {
-  id: string;
+  id: number;
+  slug: string;
   name: string;
   location: string;
   price: number;
@@ -21,7 +22,8 @@ type PropertyRow = {
 
 function mapProperty(row: PropertyRow): Property {
   return {
-    id: row.id,
+    id: String(row.id),
+    slug: row.slug,
     name: row.name,
     location: row.location,
     price: row.price,
@@ -42,8 +44,7 @@ export async function getFeaturedProperties() {
     .from("properties")
     .select("*")
     .eq("featured", true)
-    .order("created_at", { ascending: false })
-    .limit(2);
+    .order("created_at", { ascending: false });
 
   if (error) throw new Error(`No se pudieron cargar las destacadas: ${error.message}`);
   return (data as PropertyRow[]).map(mapProperty);

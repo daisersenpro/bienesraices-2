@@ -1,5 +1,6 @@
 create table if not exists public.properties (
-  id text primary key,
+  id bigint generated always as identity primary key,
+  slug text unique not null,
   name text not null,
   location text not null,
   price numeric not null check (price >= 0),

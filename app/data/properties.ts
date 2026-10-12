@@ -1,5 +1,6 @@
 export type Property = {
   id: string;
+  slug: string;
   name: string;
   location: string;
   price: number;
@@ -24,6 +25,7 @@ export function formatPrice(price: number) {
 export const featuredProperties: Property[] = [
   {
     id: "glass-pavilion",
+    slug: "glass-pavilion",
     name: "Pabellón de Cristal",
     location: "Lo Barnechea, Santiago",
     price: 4830000000,
@@ -38,6 +40,7 @@ export const featuredProperties: Property[] = [
   },
   {
     id: "azure-heights",
+    slug: "azure-heights",
     name: "Ático Alturas del Pacífico",
     location: "Vitacura, Santiago",
     price: 3496000000,
@@ -55,6 +58,7 @@ export const featuredProperties: Property[] = [
 export const newProperties: Property[] = [
   {
     id: "urban-loft",
+    slug: "urban-loft",
     name: "Loft Urbano",
     location: "Avenida Providencia 456, Santiago",
     price: 2944000,
@@ -69,6 +73,7 @@ export const newProperties: Property[] = [
   },
   {
     id: "highland-retreat",
+    slug: "highland-retreat",
     name: "Refugio de Montaña",
     location: "Camino Farellones 789, Lo Barnechea",
     price: 570400000,
@@ -82,6 +87,7 @@ export const newProperties: Property[] = [
   },
   {
     id: "sea-view-penthouse",
+    slug: "sea-view-penthouse",
     name: "Ático Vista al Mar",
     location: "Avenida del Mar 321, Viña del Mar",
     price: 4140000,
@@ -96,6 +102,7 @@ export const newProperties: Property[] = [
   },
   {
     id: "central-studio",
+    slug: "central-studio",
     name: "Estudio Central",
     location: "Avenida Central 555, Santiago",
     price: 506000000,
@@ -109,6 +116,7 @@ export const newProperties: Property[] = [
   },
   {
     id: "casa-los-aromos",
+    slug: "casa-los-aromos",
     name: "Casa Los Aromos",
     location: "Camino El Arrayán 1240, Lo Barnechea",
     price: 792000000,
@@ -122,6 +130,7 @@ export const newProperties: Property[] = [
   },
   {
     id: "departamento-lastarria",
+    slug: "departamento-lastarria",
     name: "Departamento Lastarria",
     location: "José Victorino Lastarria 85, Santiago",
     price: 2380000,
@@ -136,6 +145,7 @@ export const newProperties: Property[] = [
   },
   {
     id: "villa-costa-brava",
+    slug: "villa-costa-brava",
     name: "Villa Costa Brava",
     location: "Avenida Borgoño 1850, Concón",
     price: 1150000000,
@@ -149,6 +159,7 @@ export const newProperties: Property[] = [
   },
   {
     id: "atico-bicentenario",
+    slug: "atico-bicentenario",
     name: "Ático Parque Bicentenario",
     location: "Avenida Nueva Costanera 3900, Vitacura",
     price: 4650000,
@@ -163,6 +174,7 @@ export const newProperties: Property[] = [
   },
   {
     id: "casa-valle-nevado",
+    slug: "casa-valle-nevado",
     name: "Casa Valle Nevado",
     location: "Camino Valle Nevado 650, Farellones",
     price: 680000000,
@@ -176,6 +188,7 @@ export const newProperties: Property[] = [
   },
   {
     id: "loft-barrio-italia",
+    slug: "loft-barrio-italia",
     name: "Loft Barrio Italia",
     location: "Avenida Italia 1420, Ñuñoa",
     price: 1750000,
@@ -190,6 +203,7 @@ export const newProperties: Property[] = [
   },
   {
     id: "casa-jardin-del-mar",
+    slug: "casa-jardin-del-mar",
     name: "Casa Jardín del Mar",
     location: "Los Pescadores 740, Viña del Mar",
     price: 924000000,
@@ -203,6 +217,7 @@ export const newProperties: Property[] = [
   },
   {
     id: "villa-lago-ranco",
+    slug: "villa-lago-ranco",
     name: "Villa Lago Ranco",
     location: "Ruta T-85, Lago Ranco",
     price: 1350000000,
@@ -216,6 +231,7 @@ export const newProperties: Property[] = [
   },
   {
     id: "departamento-puerto-varas",
+    slug: "departamento-puerto-varas",
     name: "Departamento Lago Llanquihue",
     location: "Avenida Vicente Pérez Rosales 980, Puerto Varas",
     price: 2850000,
@@ -230,6 +246,7 @@ export const newProperties: Property[] = [
   },
   {
     id: "atico-manquehue",
+    slug: "atico-manquehue",
     name: "Ático Vista Manquehue",
     location: "Avenida Manquehue Norte 1120, Las Condes",
     price: 598000000,

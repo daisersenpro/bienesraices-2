@@ -30,6 +30,27 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=tu_clave_publishable
 
 El esquema de la tabla y sus políticas está en [`supabase/schema.sql`](./supabase/schema.sql). La página principal usa paginación server-side con los parámetros `page`, `tipo` y `busqueda`; por ejemplo, `/?page=2&tipo=House`.
 
+### Propiedades destacadas
+
+La tabla `properties` incluye la bandera booleana `featured`. Cuando su valor es `true`, la propiedad aparece en **Colecciones destacadas** y no se repite en el listado paginado.
+
+Cada propiedad usa un `id` numérico autoincremental generado por PostgreSQL como identificador interno y un `slug` único, legible y estable para URLs o referencias funcionales.
+
+Para marcar o quitar una propiedad manualmente desde el SQL Editor:
+
+```sql
+update public.properties
+set featured = true
+where slug = 'casa-los-aromos';
+
+update public.properties
+set featured = false
+where slug = 'glass-pavilion';
+```
+
+La migración inicial se encuentra en [`supabase/migrations/20261011_featured_property_flag.sql`](./supabase/migrations/20261011_featured_property_flag.sql).
+La migración de identificadores se encuentra en [`supabase/migrations/20261011_properties_bigint_slug.sql`](./supabase/migrations/20261011_properties_bigint_slug.sql).
+
 ## Desarrollo
 
 Inicia el servidor de desarrollo:
