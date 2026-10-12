@@ -19,6 +19,17 @@ npm install
 
 Si el proyecto necesita variables de entorno, crea un archivo `.env.local` a partir de `.env.example`. No subas `.env.local` ni ningún archivo con credenciales al repositorio.
 
+## Supabase
+
+El home consulta las propiedades desde Supabase mediante funciones servidor de Next.js. Configura estas variables en `.env.local`:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://TU_PROJECT_REF.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=tu_clave_publishable
+```
+
+El esquema de la tabla y sus políticas está en [`supabase/schema.sql`](./supabase/schema.sql). La página principal usa paginación server-side con los parámetros `page`, `tipo` y `busqueda`; por ejemplo, `/?page=2&tipo=House`.
+
 ## Desarrollo
 
 Inicia el servidor de desarrollo:

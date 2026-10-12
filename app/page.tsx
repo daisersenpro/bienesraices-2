@@ -1,8 +1,8 @@
-"use client";
-
-import { FormEvent, useMemo, useState } from "react";
 import { PropertyCard } from "./components/property-card";
-import { featuredProperties, newProperties } from "./data/properties";
+import { formatPrice, type Property } from "./data/properties";
+import { getFeaturedProperties, getProperties } from "./data/property-repository";
+
+export const instant = false;
 
 const categories = [
   { value: "All", label: "Todas" },
@@ -13,30 +13,29 @@ const categories = [
 ] as const;
 type Category = (typeof categories)[number]["value"];
 
-export default function Home() {
-  const [category, setCategory] = useState<Category>("All");
-  const [query, setQuery] = useState("");
-  const [submittedQuery, setSubmittedQuery] = useState("");
+type SearchParams = Promise<{
+  page?: string;
+  tipo?: string;
+  busqueda?: string;
+}>;
 
-  const filteredProperties = useMemo(() => {
-    const normalizedQuery = submittedQuery.trim().toLowerCase();
-    return newProperties.filter((property) => {
-      const matchesCategory = category === "All" || property.type === category;
-      const matchesQuery =
-        !normalizedQuery ||
-        `${property.name} ${property.location}`.toLowerCase().includes(normalizedQuery);
-      return matchesCategory && matchesQuery;
-    });
-  }, [category, submittedQuery]);
-
-  function handleSearch(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setSubmittedQuery(query);
-  }
+export default async function Home({ searchParams }: { searchParams: SearchParams }) {
+  const params = await searchParams;
+  const page = Math.max(1, Number.parseInt(params.page ?? "1", 10) || 1);
+  const selectedType = categories.some((item) => item.value === params.tipo)
+    ? (params.tipo as Category)
+    : "All";
+  const query = params.busqueda?.trim() ?? "";
+  const type = selectedType === "All" ? undefined : selectedType;
+  const [{ properties, total, pageSize }, featuredProperties] = await Promise.all([
+    getProperties({ page, type, query }),
+    getFeaturedProperties(),
+  ]);
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   return (
     <>
-      <nav className="sticky top-0 z-50 border-b border-nordic/10 bg-background/95 backdrop-blur-md">
+      <nav className="sticky top-0 z-50 border-b border-[#b9d8ee] bg-[#e7f2fb]/95 backdrop-blur-md">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <a href="#" className="flex items-center gap-2">
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-nordic text-lg text-white">⌂</span>
@@ -66,17 +65,17 @@ export default function Home() {
             </span>
             .
           </h1>
-          <form onSubmit={handleSearch} className="relative mx-auto max-w-2xl">
+          <form action="/" className="relative mx-auto max-w-2xl">
             <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-2xl text-muted">
               ⌕
             </span>
             <input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              defaultValue={query}
               className="block w-full rounded-xl border-0 bg-white py-4 pl-12 pr-32 text-lg text-nordic shadow-soft outline-none placeholder:text-muted/60 focus:ring-2 focus:ring-mosque"
               placeholder="Busca por ciudad, barrio o dirección..."
               aria-label="Buscar propiedades"
             />
+            {selectedType !== "All" && <input type="hidden" name="tipo" value={selectedType} />}
             <button
               type="submit"
               className="absolute inset-y-2 right-2 rounded-lg bg-mosque px-6 font-medium text-white shadow-lg shadow-mosque/20 transition-colors hover:bg-nordic"
@@ -86,18 +85,17 @@ export default function Home() {
           </form>
           <div className="hide-scroll flex items-center justify-start gap-3 overflow-x-auto py-2 px-1 sm:justify-center">
             {categories.map((item) => (
-              <button
+              <a
                 key={item.value}
-                type="button"
-                onClick={() => setCategory(item.value)}
+                href={item.value === "All" ? "/" : `/?tipo=${item.value}`}
                 className={`whitespace-nowrap rounded-full px-5 py-2 text-sm font-medium transition-all ${
-                  category === item.value
+                  selectedType === item.value
                     ? "bg-nordic text-white shadow-lg shadow-nordic/10"
                     : "border border-nordic/10 bg-white text-muted hover:border-mosque/50 hover:text-nordic"
                 }`}
               >
                 {item.label}
-              </button>
+              </a>
             ))}
             <span className="mx-2 h-6 w-px shrink-0 bg-nordic/10" />
             <button type="button" className="whitespace-nowrap px-2 py-2 text-sm font-medium text-nordic transition-colors hover:text-mosque">
@@ -123,9 +121,9 @@ export default function Home() {
           <span className="px-4 py-1.5 text-sm font-medium text-muted">Comprar</span>
           <span className="px-4 py-1.5 text-sm font-medium text-muted">Alquilar</span>
         </div>
-        {filteredProperties.length > 0 ? (
+        {properties.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filteredProperties.map((property) => (
+            {properties.map((property) => (
               <PropertyCard key={property.id} property={property} />
             ))}
           </div>
@@ -134,6 +132,9 @@ export default function Home() {
             <p className="font-medium text-nordic">No encontramos propiedades</p>
             <p className="mt-1 text-sm text-muted">Prueba con otra ubicación o tipo de propiedad.</p>
           </div>
+        )}
+        {totalPages > 1 && (
+          <Pagination page={page} totalPages={totalPages} type={selectedType} query={query} />
         )}
       </section>
       </main>
@@ -153,7 +154,7 @@ function SectionHeading({ title, description, linkText }: { title: string; descr
   );
 }
 
-function FeaturedProperty({ property }: { property: (typeof featuredProperties)[number] }) {
+function FeaturedProperty({ property }: { property: Property }) {
   return (
     <article className="group overflow-hidden rounded-2xl bg-white shadow-soft">
       <div className="relative aspect-[4/3] overflow-hidden">
@@ -167,7 +168,7 @@ function FeaturedProperty({ property }: { property: (typeof featuredProperties)[
             <h3 className="text-xl font-medium text-nordic transition-colors group-hover:text-mosque">{property.name}</h3>
             <p className="mt-1 text-sm text-muted">⌖ {property.location}</p>
           </div>
-          <span className="text-right text-xl font-semibold text-mosque">{property.price}</span>
+          <span className="text-right text-xl font-semibold text-mosque">{formatPrice(property.price)}</span>
         </div>
         <div className="mt-6 flex items-center gap-4 border-t border-nordic/10 pt-6 text-sm text-muted sm:gap-6">
           <span>⌂ {property.beds}</span>
@@ -176,5 +177,34 @@ function FeaturedProperty({ property }: { property: (typeof featuredProperties)[
         </div>
       </div>
     </article>
+  );
+}
+
+function Pagination({
+  page,
+  totalPages,
+  type,
+  query,
+}: {
+  page: number;
+  totalPages: number;
+  type: Category;
+  query: string;
+}) {
+  const link = (nextPage: number) => {
+    const params = new URLSearchParams();
+    if (nextPage > 1) params.set("page", String(nextPage));
+    if (type !== "All") params.set("tipo", type);
+    if (query) params.set("busqueda", query);
+    const search = params.toString();
+    return search ? `/?${search}` : "/";
+  };
+
+  return (
+    <nav aria-label="Paginación de propiedades" className="mt-10 flex items-center justify-center gap-2">
+      {page > 1 && <a href={link(page - 1)} className="rounded-lg border border-nordic/10 bg-white px-4 py-2 text-sm font-medium text-nordic hover:border-mosque">Anterior</a>}
+      <span className="px-4 text-sm text-muted">Página {page} de {totalPages}</span>
+      {page < totalPages && <a href={link(page + 1)} className="rounded-lg bg-mosque px-4 py-2 text-sm font-medium text-white hover:bg-nordic">Siguiente</a>}
+    </nav>
   );
 }

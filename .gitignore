@@ -33,7 +33,7 @@ yarn-error.log*
 # env files
 .env
 .env.*
-!.env.example
+!.env.template
 
 # local project instructions
 /vibe-coding/

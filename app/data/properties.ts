@@ -2,7 +2,7 @@ export type Property = {
   id: string;
   name: string;
   location: string;
-  price: string;
+  price: number;
   priceSuffix?: string;
   type: "House" | "Apartment" | "Villa" | "Penthouse";
   listing: "En venta" | "En alquiler";
@@ -13,12 +13,20 @@ export type Property = {
   label?: string;
 };
 
+export function formatPrice(price: number) {
+  return new Intl.NumberFormat("es-CL", {
+    style: "currency",
+    currency: "CLP",
+    maximumFractionDigits: 0,
+  }).format(price);
+}
+
 export const featuredProperties: Property[] = [
   {
     id: "glass-pavilion",
-    name: "The Glass Pavilion",
-    location: "Beverly Hills, California",
-    price: "$5,250,000",
+    name: "Pabellón de Cristal",
+    location: "Lo Barnechea, Santiago",
+    price: 4830000000,
     type: "Villa",
     listing: "En venta",
     beds: "5 habitaciones",
@@ -30,9 +38,9 @@ export const featuredProperties: Property[] = [
   },
   {
     id: "azure-heights",
-    name: "Azure Heights Penthouse",
-    location: "Downtown, Vancouver",
-    price: "$3,800,000",
+    name: "Ático Alturas del Pacífico",
+    location: "Vitacura, Santiago",
+    price: 3496000000,
     type: "Penthouse",
     listing: "En venta",
     beds: "3 habitaciones",
@@ -47,10 +55,10 @@ export const featuredProperties: Property[] = [
 export const newProperties: Property[] = [
   {
     id: "urban-loft",
-    name: "Urban Loft",
-    location: "456 Elm Ave, Portland",
-    price: "$3,200",
-    priceSuffix: "/mo",
+    name: "Loft Urbano",
+    location: "Avenida Providencia 456, Santiago",
+    price: 2944000,
+    priceSuffix: " al mes",
     type: "Apartment",
     listing: "En alquiler",
     beds: "1",
@@ -61,23 +69,23 @@ export const newProperties: Property[] = [
   },
   {
     id: "highland-retreat",
-    name: "Highland Retreat",
-    location: "789 Mountain Rd, Bend",
-    price: "$620,000",
+    name: "Refugio de Montaña",
+    location: "Camino Farellones 789, Lo Barnechea",
+    price: 570400000,
     type: "House",
     listing: "En venta",
     beds: "2",
     baths: "2",
     area: "98m²",
     image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuARQWC19e7mleUpjb8CWLztEv_svJeRFOaC2i-9r9GctFuX5Barzhfai9wNM1WW8bcGlqdFM32d3KPf7SItom5ijdHOz5rGGQPeT7PlWs8-y9LkfcsHLQqsLxalhxP94XJo76_mAMp7T2dVj3hPKHNzTDLLiS6ujSdSsyo3onxQthp4ZkVE8op92gyTLUUucaGaxO8vJvyhH3FuWB07EPqT1WsW0lr9Of5lUPonjG9eiqE1XiJXTqzXUZQt5JorfPwCO1MioZA_Zro",
+      "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?auto=format&fit=crop&w=900&q=85",
   },
   {
     id: "sea-view-penthouse",
-    name: "Sea View Penthouse",
-    location: "321 Ocean Dr, Miami",
-    price: "$4,500",
-    priceSuffix: "/mo",
+    name: "Ático Vista al Mar",
+    location: "Avenida del Mar 321, Viña del Mar",
+    price: 4140000,
+    priceSuffix: " al mes",
     type: "Penthouse",
     listing: "En alquiler",
     beds: "3",
@@ -88,9 +96,9 @@ export const newProperties: Property[] = [
   },
   {
     id: "central-studio",
-    name: "Central Studio",
-    location: "555 Main St, Chicago",
-    price: "$550,000",
+    name: "Estudio Central",
+    location: "Avenida Central 555, Santiago",
+    price: 506000000,
     type: "Apartment",
     listing: "En venta",
     beds: "1",
@@ -98,5 +106,139 @@ export const newProperties: Property[] = [
     area: "50m²",
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuA1w-Hb1289NqZKon3VK8bpmMiCDYYiAMT5egzTINo9m9wSZRHv-k-1IGTVoL1NT8YeZXJHa87JPNDIPrtrbP7jChHq0ypXF90uByhC6VA9O788_B4FY8JVg4chbWN9bcrn9-9FvVvfZX8Aj60Iqg_C8CsCA9DEnJqi2rJvzmK5UP5z-9XRTRjBneAPCa8iGgGWBD9yYKsziN6vn0ePBDGo3inieQtmbr46W31p6UfQ649XRxTm7ygOY2J-jxW1r0qWs8i97KGpkTE",
+  },
+  {
+    id: "casa-los-aromos",
+    name: "Casa Los Aromos",
+    location: "Camino El Arrayán 1240, Lo Barnechea",
+    price: 792000000,
+    type: "House",
+    listing: "En venta",
+    beds: "4",
+    baths: "3",
+    area: "240m²",
+    image:
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    id: "departamento-lastarria",
+    name: "Departamento Lastarria",
+    location: "José Victorino Lastarria 85, Santiago",
+    price: 2380000,
+    priceSuffix: " al mes",
+    type: "Apartment",
+    listing: "En alquiler",
+    beds: "2",
+    baths: "2",
+    area: "92m²",
+    image:
+      "https://images.unsplash.com/photo-1502672023488-70e25813eb80?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    id: "villa-costa-brava",
+    name: "Villa Costa Brava",
+    location: "Avenida Borgoño 1850, Concón",
+    price: 1150000000,
+    type: "Villa",
+    listing: "En venta",
+    beds: "5",
+    baths: "4",
+    area: "380m²",
+    image:
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    id: "atico-bicentenario",
+    name: "Ático Parque Bicentenario",
+    location: "Avenida Nueva Costanera 3900, Vitacura",
+    price: 4650000,
+    priceSuffix: " al mes",
+    type: "Penthouse",
+    listing: "En alquiler",
+    beds: "3",
+    baths: "3",
+    area: "210m²",
+    image:
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    id: "casa-valle-nevado",
+    name: "Casa Valle Nevado",
+    location: "Camino Valle Nevado 650, Farellones",
+    price: 680000000,
+    type: "House",
+    listing: "En venta",
+    beds: "3",
+    baths: "2",
+    area: "165m²",
+    image:
+      "https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    id: "loft-barrio-italia",
+    name: "Loft Barrio Italia",
+    location: "Avenida Italia 1420, Ñuñoa",
+    price: 1750000,
+    priceSuffix: " al mes",
+    type: "Apartment",
+    listing: "En alquiler",
+    beds: "1",
+    baths: "1",
+    area: "68m²",
+    image:
+      "https://images.unsplash.com/photo-1560185008-b033106af5c3?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    id: "casa-jardin-del-mar",
+    name: "Casa Jardín del Mar",
+    location: "Los Pescadores 740, Viña del Mar",
+    price: 924000000,
+    type: "House",
+    listing: "En venta",
+    beds: "4",
+    baths: "3",
+    area: "280m²",
+    image:
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    id: "villa-lago-ranco",
+    name: "Villa Lago Ranco",
+    location: "Ruta T-85, Lago Ranco",
+    price: 1350000000,
+    type: "Villa",
+    listing: "En venta",
+    beds: "6",
+    baths: "4",
+    area: "420m²",
+    image:
+      "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    id: "departamento-puerto-varas",
+    name: "Departamento Lago Llanquihue",
+    location: "Avenida Vicente Pérez Rosales 980, Puerto Varas",
+    price: 2850000,
+    priceSuffix: " al mes",
+    type: "Apartment",
+    listing: "En alquiler",
+    beds: "2",
+    baths: "2",
+    area: "105m²",
+    image:
+      "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=900&q=85",
+  },
+  {
+    id: "atico-manquehue",
+    name: "Ático Vista Manquehue",
+    location: "Avenida Manquehue Norte 1120, Las Condes",
+    price: 598000000,
+    type: "Penthouse",
+    listing: "En venta",
+    beds: "3",
+    baths: "2",
+    area: "145m²",
+    image:
+      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=900&q=85",
   },
 ];
