@@ -9,6 +9,8 @@ create table if not exists public.properties (
   listing_type text not null check (listing_type in ('En venta', 'En alquiler')),
   beds text not null,
   baths text not null,
+  bedrooms integer not null check (bedrooms >= 0),
+  bathrooms numeric(3, 1) not null check (bathrooms >= 0),
   area text not null,
   image_url text not null,
   label text,

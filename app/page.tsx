@@ -1,4 +1,5 @@
 import { PropertyCard } from "./components/property-card";
+import { PropertyFilters } from "./components/property-filters";
 import Link from "next/link";
 import { formatPrice, type Property } from "./data/properties";
 import { getFeaturedProperties, getProperties } from "./data/property-repository";
@@ -18,6 +19,12 @@ type SearchParams = Promise<{
   page?: string;
   tipo?: string;
   busqueda?: string;
+  ubicacion?: string;
+  precioMinimo?: string;
+  precioMaximo?: string;
+  operacion?: string;
+  dormitorios?: string;
+  banos?: string;
 }>;
 
 export default async function Home({ searchParams }: { searchParams: SearchParams }) {
@@ -27,9 +34,25 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
     ? (params.tipo as Category)
     : "All";
   const query = params.busqueda?.trim() ?? "";
+  const location = params.ubicacion?.trim() ?? "";
+  const minPrice = parsePositiveNumber(params.precioMinimo);
+  const maxPrice = parsePositiveNumber(params.precioMaximo);
+  const minBedrooms = parsePositiveNumber(params.dormitorios);
+  const minBathrooms = parsePositiveNumber(params.banos);
+  const listing = params.operacion === "En venta" || params.operacion === "En alquiler"
+    ? params.operacion
+    : undefined;
   const type = selectedType === "All" ? undefined : selectedType;
+  const activeFilters = {
+    ubicacion: location,
+    precioMinimo: params.precioMinimo ?? "",
+    precioMaximo: params.precioMaximo ?? "",
+    operacion: listing ?? "",
+    dormitorios: params.dormitorios ?? "",
+    banos: params.banos ?? "",
+  };
   const [{ properties, total, pageSize }, featuredProperties] = await Promise.all([
-    getProperties({ page, type, query }),
+    getProperties({ page, type, query, location, listing, minPrice, maxPrice, minBedrooms, minBathrooms }),
     getFeaturedProperties(),
   ]);
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
@@ -71,12 +94,14 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
               ⌕
             </span>
             <input
+              name="busqueda"
               defaultValue={query}
               className="block w-full rounded-xl border-0 bg-white py-4 pl-12 pr-32 text-lg text-nordic shadow-soft outline-none placeholder:text-muted/60 focus:ring-2 focus:ring-mosque"
               placeholder="Busca por ciudad, barrio o dirección..."
               aria-label="Buscar propiedades"
             />
             {selectedType !== "All" && <input type="hidden" name="tipo" value={selectedType} />}
+            {Object.entries(activeFilters).map(([name, value]) => value && <input key={name} type="hidden" name={name} value={value} />)}
             <button
               type="submit"
               className="absolute inset-y-2 right-2 rounded-lg bg-mosque px-6 font-medium text-white shadow-lg shadow-mosque/20 transition-colors hover:bg-nordic"
@@ -88,7 +113,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             {categories.map((item) => (
               <a
                 key={item.value}
-                href={item.value === "All" ? "/" : `/?tipo=${item.value}`}
+                href={categoryHref(item.value, query, activeFilters)}
                 className={`whitespace-nowrap rounded-full px-5 py-2 text-sm font-medium transition-all ${
                   selectedType === item.value
                     ? "bg-nordic text-white shadow-lg shadow-nordic/10"
@@ -99,9 +124,15 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
               </a>
             ))}
             <span className="mx-2 h-6 w-px shrink-0 bg-nordic/10" />
-            <button type="button" className="whitespace-nowrap px-2 py-2 text-sm font-medium text-nordic transition-colors hover:text-mosque">
-              ⚙ Filtros
-            </button>
+            <PropertyFilters initialValues={{
+              ubicacion: location,
+              precioMinimo: params.precioMinimo ?? "",
+              precioMaximo: params.precioMaximo ?? "",
+              tipo: selectedType === "All" ? "" : selectedType,
+              operacion: listing ?? "",
+              dormitorios: params.dormitorios ?? "",
+              banos: params.banos ?? "",
+            }} />
           </div>
         </div>
       </section>
@@ -135,12 +166,35 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
           </div>
         )}
         {totalPages > 1 && (
-          <Pagination page={page} totalPages={totalPages} type={selectedType} query={query} />
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            type={selectedType}
+            query={query}
+            filters={activeFilters}
+          />
         )}
       </section>
       </main>
     </>
   );
+}
+
+function parsePositiveNumber(value: string | undefined) {
+  if (!value) return undefined;
+  const number = Number(value);
+  return Number.isFinite(number) && number >= 0 ? number : undefined;
+}
+
+function categoryHref(category: Category, query: string, filters: Record<string, string>) {
+  const params = new URLSearchParams();
+  if (category !== "All") params.set("tipo", category);
+  if (query) params.set("busqueda", query);
+  for (const [key, value] of Object.entries(filters)) {
+    if (key !== "tipo" && value) params.set(key, value);
+  }
+  const search = params.toString();
+  return search ? `/?${search}` : "/";
 }
 
 function SectionHeading({ title, description, linkText }: { title: string; description: string; linkText?: string }) {
@@ -190,17 +244,22 @@ function Pagination({
   totalPages,
   type,
   query,
+  filters,
 }: {
   page: number;
   totalPages: number;
   type: Category;
   query: string;
+  filters: Record<string, string>;
 }) {
   const link = (nextPage: number) => {
     const params = new URLSearchParams();
     if (nextPage > 1) params.set("page", String(nextPage));
     if (type !== "All") params.set("tipo", type);
     if (query) params.set("busqueda", query);
+    for (const [key, value] of Object.entries(filters)) {
+      if (value) params.set(key, value);
+    }
     const search = params.toString();
     return search ? `/?${search}` : "/";
   };

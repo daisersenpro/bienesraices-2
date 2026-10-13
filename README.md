@@ -53,6 +53,8 @@ where slug = 'glass-pavilion';
 La migración inicial se encuentra en [`supabase/migrations/20261011_featured_property_flag.sql`](./supabase/migrations/20261011_featured_property_flag.sql).
 La migración de identificadores se encuentra en [`supabase/migrations/20261011_properties_bigint_slug.sql`](./supabase/migrations/20261011_properties_bigint_slug.sql).
 La migración de galería y coordenadas se encuentra en [`supabase/migrations/20261013_property_images_and_location.sql`](./supabase/migrations/20261013_property_images_and_location.sql).
+La migración de filtros de búsqueda se encuentra en [`supabase/migrations/20261013_property_search_filters.sql`](./supabase/migrations/20261013_property_search_filters.sql).
+Los datos adicionales para probar búsqueda, filtros y galerías se encuentran en [`supabase/migrations/20261013_properties_development_seed.sql`](./supabase/migrations/20261013_properties_development_seed.sql). Ejecuta primero la migración de filtros y después el seed de propiedades.
 
 ## Desarrollo
 

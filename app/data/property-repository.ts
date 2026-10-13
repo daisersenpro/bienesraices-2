@@ -14,6 +14,8 @@ type PropertyRow = {
   listing_type: Property["listing"];
   beds: string;
   baths: string;
+  bedrooms: number | null;
+  bathrooms: number | null;
   area: string;
   image_url: string;
   label: string | null;
@@ -66,22 +68,40 @@ export async function getProperties({
   page,
   type,
   query,
+  location,
+  listing,
+  minPrice,
+  maxPrice,
+  minBedrooms,
+  minBathrooms,
 }: {
   page: number;
   type?: Property["type"];
   query?: string;
+  location?: string;
+  listing?: Property["listing"];
+  minPrice?: number;
+  maxPrice?: number;
+  minBedrooms?: number;
+  minBathrooms?: number;
 }) {
   const supabase = getSupabaseServerClient();
   const from = (page - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
   let request = supabase
     .from("properties")
-    .select("id, slug, name, location, price, price_suffix, property_type, listing_type, beds, baths, area, image_url, label, featured, latitude, longitude", { count: "exact" })
+    .select("id, slug, name, location, price, price_suffix, property_type, listing_type, beds, baths, bedrooms, bathrooms, area, image_url, label, featured, latitude, longitude", { count: "exact" })
     .eq("featured", false)
     .order("created_at", { ascending: false })
     .range(from, to);
 
   if (type) request = request.eq("property_type", type);
+  if (location) request = request.ilike("location", `%${location}%`);
+  if (listing) request = request.eq("listing_type", listing);
+  if (minPrice !== undefined) request = request.gte("price", minPrice);
+  if (maxPrice !== undefined) request = request.lte("price", maxPrice);
+  if (minBedrooms !== undefined) request = request.gte("bedrooms", minBedrooms);
+  if (minBathrooms !== undefined) request = request.gte("bathrooms", minBathrooms);
   if (query) request = request.or(`name.ilike.%${query}%,location.ilike.%${query}%`);
 
   const { data, count, error } = await request;
