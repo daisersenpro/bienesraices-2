@@ -1,4 +1,5 @@
 import { PropertyCard } from "./components/property-card";
+import Link from "next/link";
 import { formatPrice, type Property } from "./data/properties";
 import { getFeaturedProperties, getProperties } from "./data/property-repository";
 
@@ -37,10 +38,10 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
     <>
       <nav className="sticky top-0 z-50 border-b border-[#b9d8ee] bg-[#e7f2fb]/95 backdrop-blur-md">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <a href="#" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2" aria-label="Volver al inicio de Casas SenPro">
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-nordic text-lg text-white">⌂</span>
             <span className="text-xl font-semibold tracking-tight text-nordic">Casas SenPro</span>
-          </a>
+          </Link>
           <div className="hidden items-center space-x-8 md:flex">
             <a href="#" className="border-b-2 border-mosque px-1 py-1 text-sm font-medium text-mosque">Comprar</a>
             <a href="#new-in-market" className="px-1 py-1 text-sm font-medium text-nordic/70 transition-colors hover:text-nordic">Alquilar</a>
@@ -158,14 +159,18 @@ function FeaturedProperty({ property }: { property: Property }) {
   return (
     <article className="group overflow-hidden rounded-2xl bg-white shadow-soft">
       <div className="relative aspect-[4/3] overflow-hidden">
-        <img src={property.image} alt={`${property.name}, ${property.location}`} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+        <Link href={`/propiedades/${property.slug}`} aria-label={`Ver ${property.name}`}>
+          <img src={property.image} alt={`${property.name}, ${property.location}`} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+        </Link>
         <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-nordic">{property.label}</span>
         <span className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-black/50 to-transparent" />
       </div>
       <div className="p-6">
         <div className="mb-2 flex items-start justify-between gap-4">
           <div>
-            <h3 className="text-xl font-medium text-nordic transition-colors group-hover:text-mosque">{property.name}</h3>
+            <h3 className="text-xl font-medium text-nordic transition-colors group-hover:text-mosque">
+              <Link href={`/propiedades/${property.slug}`}>{property.name}</Link>
+            </h3>
             <p className="mt-1 text-sm text-muted">⌖ {property.location}</p>
           </div>
           <span className="text-right text-xl font-semibold text-mosque">{formatPrice(property.price)}</span>

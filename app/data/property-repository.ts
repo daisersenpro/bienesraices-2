@@ -1,5 +1,5 @@
 import { getSupabaseServerClient } from "../../lib/supabase/server";
-import type { Property } from "./properties";
+import type { Property, PropertyImage } from "./properties";
 
 const PAGE_SIZE = 8;
 
@@ -18,6 +18,16 @@ type PropertyRow = {
   image_url: string;
   label: string | null;
   featured: boolean;
+  latitude: number | null;
+  longitude: number | null;
+}
+
+type PropertyImageRow = {
+  id: number;
+  image_url: string;
+  alt_text: string;
+  sort_order: number;
+  is_primary: boolean;
 };
 
 function mapProperty(row: PropertyRow): Property {
@@ -35,6 +45,8 @@ function mapProperty(row: PropertyRow): Property {
     area: row.area,
     image: row.image_url,
     label: row.label ?? undefined,
+    latitude: row.latitude ?? undefined,
+    longitude: row.longitude ?? undefined,
   };
 }
 
@@ -42,7 +54,7 @@ export async function getFeaturedProperties() {
   const supabase = getSupabaseServerClient();
   const { data, error } = await supabase
     .from("properties")
-    .select("*")
+    .select("id, slug, name, location, price, price_suffix, property_type, listing_type, beds, baths, area, image_url, label, featured, latitude, longitude")
     .eq("featured", true)
     .order("created_at", { ascending: false });
 
@@ -64,7 +76,7 @@ export async function getProperties({
   const to = from + PAGE_SIZE - 1;
   let request = supabase
     .from("properties")
-    .select("*", { count: "exact" })
+    .select("id, slug, name, location, price, price_suffix, property_type, listing_type, beds, baths, area, image_url, label, featured, latitude, longitude", { count: "exact" })
     .eq("featured", false)
     .order("created_at", { ascending: false })
     .range(from, to);
@@ -80,5 +92,33 @@ export async function getProperties({
     total: count ?? 0,
     page,
     pageSize: PAGE_SIZE,
+  };
+}
+
+export async function getPropertyBySlug(slug: string) {
+  const supabase = getSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("properties")
+    .select("id, slug, name, location, price, price_suffix, property_type, listing_type, beds, baths, area, image_url, label, featured, latitude, longitude, property_images(id, image_url, alt_text, sort_order, is_primary)")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (error) throw new Error(`No se pudo cargar la propiedad: ${error.message}`);
+  if (!data) return null;
+
+  const row = data as PropertyRow & { property_images: PropertyImageRow[] };
+  const images: PropertyImage[] = (row.property_images ?? [])
+    .sort((first, second) => first.sort_order - second.sort_order)
+    .map((image) => ({
+      id: image.id,
+      url: image.image_url,
+      alt: image.alt_text,
+      sortOrder: image.sort_order,
+      isPrimary: image.is_primary,
+    }));
+
+  return {
+    ...mapProperty(row),
+    images,
   };
 }

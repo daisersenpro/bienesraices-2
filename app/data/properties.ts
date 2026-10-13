@@ -12,6 +12,17 @@ export type Property = {
   area: string;
   image: string;
   label?: string;
+  latitude?: number;
+  longitude?: number;
+  images?: PropertyImage[];
+};
+
+export type PropertyImage = {
+  id?: number;
+  url: string;
+  alt: string;
+  sortOrder: number;
+  isPrimary: boolean;
 };
 
 export function formatPrice(price: number) {
