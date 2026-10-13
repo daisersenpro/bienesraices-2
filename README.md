@@ -36,6 +36,8 @@ La tabla `properties` incluye la bandera booleana `featured`. Cuando su valor es
 
 Cada propiedad usa un `id` numérico autoincremental generado por PostgreSQL como identificador interno y un `slug` único, legible y estable para URLs o referencias funcionales.
 
+Las propiedades tienen `image_url` para la imagen de portada y la tabla relacionada `property_images` para la galería completa. La migración de desarrollo [`supabase/migrations/20261013_property_images_development_seed.sql`](./supabase/migrations/20261013_property_images_development_seed.sql) agrega tres imágenes adicionales por propiedad de forma idempotente.
+
 Para marcar o quitar una propiedad manualmente desde el SQL Editor:
 
 ```sql
@@ -50,6 +52,7 @@ where slug = 'glass-pavilion';
 
 La migración inicial se encuentra en [`supabase/migrations/20261011_featured_property_flag.sql`](./supabase/migrations/20261011_featured_property_flag.sql).
 La migración de identificadores se encuentra en [`supabase/migrations/20261011_properties_bigint_slug.sql`](./supabase/migrations/20261011_properties_bigint_slug.sql).
+La migración de galería y coordenadas se encuentra en [`supabase/migrations/20261013_property_images_and_location.sql`](./supabase/migrations/20261013_property_images_and_location.sql).
 
 ## Desarrollo
 
