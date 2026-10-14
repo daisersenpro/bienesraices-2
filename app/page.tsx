@@ -111,9 +111,10 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
           </form>
           <div className="hide-scroll flex items-center justify-start gap-3 overflow-x-auto py-2 px-1 sm:justify-center">
             {categories.map((item) => (
-              <a
+              <Link
                 key={item.value}
                 href={categoryHref(item.value, query, activeFilters)}
+                aria-current={selectedType === item.value ? "page" : undefined}
                 className={`whitespace-nowrap rounded-full px-5 py-2 text-sm font-medium transition-all ${
                   selectedType === item.value
                     ? "bg-nordic text-white shadow-lg shadow-nordic/10"
@@ -121,7 +122,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
                 }`}
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
             <span className="mx-2 h-6 w-px shrink-0 bg-nordic/10" />
             <PropertyFilters initialValues={{
