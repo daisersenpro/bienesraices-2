@@ -1,17 +1,20 @@
 import { PropertyCard } from "./components/property-card";
 import { PropertyFilters } from "./components/property-filters";
+import { LanguageSelector } from "./components/language-selector";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { formatPrice, type Property } from "./data/properties";
 import { getFeaturedProperties, getProperties } from "./data/property-repository";
+import { isLocale, translations, type Locale } from "./i18n/config";
 
 export const instant = false;
 
 const categories = [
-  { value: "All", label: "Todas" },
-  { value: "House", label: "Casas" },
-  { value: "Apartment", label: "Apartamentos" },
-  { value: "Villa", label: "Villas" },
-  { value: "Penthouse", label: "Áticos" },
+  { value: "All", translation: "all" },
+  { value: "House", translation: "houses" },
+  { value: "Apartment", translation: "apartments" },
+  { value: "Villa", translation: "villas" },
+  { value: "Penthouse", translation: "penthouses" },
 ] as const;
 type Category = (typeof categories)[number]["value"];
 
@@ -29,6 +32,10 @@ type SearchParams = Promise<{
 
 export default async function Home({ searchParams }: { searchParams: SearchParams }) {
   const params = await searchParams;
+  const cookieStore = await cookies();
+  const cookieLocale = cookieStore.get("casas-senpro-locale")?.value;
+  const locale: Locale = isLocale(cookieLocale) ? cookieLocale : "es";
+  const t = translations[locale];
   const page = Math.max(1, Number.parseInt(params.page ?? "1", 10) || 1);
   const selectedType = categories.some((item) => item.value === params.tipo)
     ? (params.tipo as Category)
@@ -66,15 +73,16 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             <span className="text-xl font-semibold tracking-tight text-nordic">Casas SenPro</span>
           </Link>
           <div className="hidden items-center space-x-8 md:flex">
-            <a href="#" className="border-b-2 border-mosque px-1 py-1 text-sm font-medium text-mosque">Comprar</a>
-            <a href="#new-in-market" className="px-1 py-1 text-sm font-medium text-nordic/70 transition-colors hover:text-nordic">Alquilar</a>
-            <a href="#" className="px-1 py-1 text-sm font-medium text-nordic/70 transition-colors hover:text-nordic">Vender</a>
-            <a href="#" className="px-1 py-1 text-sm font-medium text-nordic/70 transition-colors hover:text-nordic">Favoritos</a>
+            <a href="#" className="border-b-2 border-mosque px-1 py-1 text-sm font-medium text-mosque">{t.buy}</a>
+            <a href="#new-in-market" className="px-1 py-1 text-sm font-medium text-nordic/70 transition-colors hover:text-nordic">{t.rent}</a>
+            <a href="#" className="px-1 py-1 text-sm font-medium text-nordic/70 transition-colors hover:text-nordic">{t.sell}</a>
+            <a href="#" className="px-1 py-1 text-sm font-medium text-nordic/70 transition-colors hover:text-nordic">{t.favorites}</a>
           </div>
-          <div className="flex items-center gap-5 text-xl text-nordic">
-            <button type="button" aria-label="Buscar">⌕</button>
-            <button type="button" aria-label="Notificaciones" className="relative">♧<span className="absolute -right-1 top-0 h-2 w-2 rounded-full bg-red-500" /></button>
-            <button type="button" aria-label="Perfil" className="hidden h-9 w-9 items-center justify-center rounded-full bg-hint text-sm font-semibold sm:flex">CS</button>
+          <div className="flex items-center gap-3 text-xl text-nordic">
+            <LanguageSelector locale={locale} label={t.language} />
+            <button type="button" aria-label={t.search}>⌕</button>
+            <button type="button" aria-label={t.notifications} className="relative">♧<span className="absolute -right-1 top-0 h-2 w-2 rounded-full bg-red-500" /></button>
+            <button type="button" aria-label={t.profile} className="hidden h-9 w-9 items-center justify-center rounded-full bg-hint text-sm font-semibold sm:flex">CS</button>
           </div>
         </div>
       </nav>
@@ -82,9 +90,9 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
       <section className="py-12 md:py-16">
         <div className="mx-auto max-w-3xl space-y-8 text-center">
           <h1 className="text-4xl font-light leading-tight tracking-tight text-nordic md:text-5xl lg:text-6xl">
-            Encuentra tu{" "}
+            {t.headlineStart}{" "}
             <span className="relative inline-block">
-              <span className="relative z-10 font-medium">hogar ideal</span>
+              <span className="relative z-10 font-medium">{t.headlineHighlight}</span>
               <span className="absolute bottom-2 left-0 z-0 h-3 w-full -rotate-1 bg-mosque/20" />
             </span>
             .
@@ -97,8 +105,8 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
               name="busqueda"
               defaultValue={query}
               className="block w-full rounded-xl border-0 bg-white py-4 pl-12 pr-32 text-lg text-nordic shadow-soft outline-none placeholder:text-muted/60 focus:ring-2 focus:ring-mosque"
-              placeholder="Busca por ciudad, barrio o dirección..."
-              aria-label="Buscar propiedades"
+              placeholder={t.searchPlaceholder}
+              aria-label={t.search}
             />
             {selectedType !== "All" && <input type="hidden" name="tipo" value={selectedType} />}
             {Object.entries(activeFilters).map(([name, value]) => value && <input key={name} type="hidden" name={name} value={value} />)}
@@ -106,7 +114,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
               type="submit"
               className="absolute inset-y-2 right-2 rounded-lg bg-mosque px-6 font-medium text-white shadow-lg shadow-mosque/20 transition-colors hover:bg-nordic"
             >
-              Buscar
+              {t.search}
             </button>
           </form>
           <div className="hide-scroll flex items-center justify-start gap-3 overflow-x-auto py-2 px-1 sm:justify-center">
@@ -121,7 +129,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
                     : "border border-nordic/10 bg-white text-muted hover:border-mosque/50 hover:text-nordic"
                 }`}
               >
-                {item.label}
+                {t[item.translation]}
               </Link>
             ))}
             <span className="mx-2 h-6 w-px shrink-0 bg-nordic/10" />
@@ -139,7 +147,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
       </section>
 
       <section className="mb-16">
-        <SectionHeading title="Colecciones destacadas" description="Propiedades seleccionadas para una mirada exigente." linkText="Ver todas" />
+        <SectionHeading title={t.featured} description={t.featuredDescription} linkText={t.viewAll} />
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           {featuredProperties.map((property) => (
             <FeaturedProperty key={property.id} property={property} />
@@ -148,11 +156,11 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
       </section>
 
       <section id="new-in-market">
-        <SectionHeading title="Novedades del mercado" description="Nuevas oportunidades añadidas esta semana." />
+        <SectionHeading title={t.marketNews} description={t.marketNewsDescription} />
         <div className="mb-6 flex gap-1 rounded-lg bg-white p-1 md:hidden">
-          <span className="rounded-md bg-nordic px-4 py-1.5 text-sm font-medium text-white">Todas</span>
-          <span className="px-4 py-1.5 text-sm font-medium text-muted">Comprar</span>
-          <span className="px-4 py-1.5 text-sm font-medium text-muted">Alquilar</span>
+          <span className="rounded-md bg-nordic px-4 py-1.5 text-sm font-medium text-white">{t.all}</span>
+          <span className="px-4 py-1.5 text-sm font-medium text-muted">{t.buy}</span>
+          <span className="px-4 py-1.5 text-sm font-medium text-muted">{t.rent}</span>
         </div>
         {properties.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -162,8 +170,8 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
           </div>
         ) : (
           <div className="rounded-2xl bg-white px-6 py-16 text-center shadow-card">
-            <p className="font-medium text-nordic">No encontramos propiedades</p>
-            <p className="mt-1 text-sm text-muted">Prueba con otra ubicación o tipo de propiedad.</p>
+            <p className="font-medium text-nordic">{t.noProperties}</p>
+            <p className="mt-1 text-sm text-muted">{t.noPropertiesDescription}</p>
           </div>
         )}
         {totalPages > 1 && (
@@ -173,6 +181,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             type={selectedType}
             query={query}
             filters={activeFilters}
+            labels={{ previous: t.previous, next: t.next, page: t.page, of: t.of }}
           />
         )}
       </section>
@@ -246,12 +255,14 @@ function Pagination({
   type,
   query,
   filters,
+  labels,
 }: {
   page: number;
   totalPages: number;
   type: Category;
   query: string;
   filters: Record<string, string>;
+  labels: { previous: string; next: string; page: string; of: string };
 }) {
   const link = (nextPage: number) => {
     const params = new URLSearchParams();
@@ -267,9 +278,9 @@ function Pagination({
 
   return (
     <nav aria-label="Paginación de propiedades" className="mt-10 flex items-center justify-center gap-2">
-      {page > 1 && <a href={link(page - 1)} className="rounded-lg border border-nordic/10 bg-white px-4 py-2 text-sm font-medium text-nordic hover:border-mosque">Anterior</a>}
-      <span className="px-4 text-sm text-muted">Página {page} de {totalPages}</span>
-      {page < totalPages && <a href={link(page + 1)} className="rounded-lg bg-mosque px-4 py-2 text-sm font-medium text-white hover:bg-nordic">Siguiente</a>}
+      {page > 1 && <a href={link(page - 1)} className="rounded-lg border border-nordic/10 bg-white px-4 py-2 text-sm font-medium text-nordic hover:border-mosque">{labels.previous}</a>}
+      <span className="px-4 text-sm text-muted">{labels.page} {page} {labels.of} {totalPages}</span>
+      {page < totalPages && <a href={link(page + 1)} className="rounded-lg bg-mosque px-4 py-2 text-sm font-medium text-white hover:bg-nordic">{labels.next}</a>}
     </nav>
   );
 }
