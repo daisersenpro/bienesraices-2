@@ -133,7 +133,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
               </Link>
             ))}
             <span className="mx-2 h-6 w-px shrink-0 bg-nordic/10" />
-            <PropertyFilters initialValues={{
+            <PropertyFilters locale={locale} initialValues={{
               ubicacion: location,
               precioMinimo: params.precioMinimo ?? "",
               precioMaximo: params.precioMaximo ?? "",
@@ -165,7 +165,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         {properties.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {properties.map((property) => (
-              <PropertyCard key={property.id} property={property} />
+              <PropertyCard key={property.id} property={property} locale={locale} />
             ))}
           </div>
         ) : (

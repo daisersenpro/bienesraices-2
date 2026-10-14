@@ -54,6 +54,18 @@ type Translation = {
   showProperties: string;
   clearFilters: string;
   close: string;
+  saveFavorite: string;
+  removeFavorite: string;
+  noImages: string;
+  viewImage: string;
+  backToProperties: string;
+  approximateLocation: string;
+  exactLocationNotice: string;
+  requestInformation: string;
+  rooms: string;
+  area: string;
+  sale: string;
+  rentLabel: string;
 };
 
 export const translations: Record<Locale, Translation> = {
@@ -70,6 +82,9 @@ export const translations: Record<Locale, Translation> = {
     location: "Ubicación", priceRange: "Rango de precio (CLP)", minPrice: "Precio mínimo", maxPrice: "Precio máximo",
     propertyType: "Tipo de propiedad", operation: "Operación", features: "Características", bedrooms: "Dormitorios", bathrooms: "Baños",
     anyAmount: "Cualquier cantidad", anyType: "Cualquier tipo", anyOperation: "Venta o arriendo", showProperties: "Mostrar propiedades", clearFilters: "Limpiar filtros", close: "Cerrar",
+    saveFavorite: "Guardar en favoritos", removeFavorite: "Quitar de favoritos", noImages: "Esta propiedad aún no tiene imágenes disponibles.", viewImage: "Ver imagen",
+    backToProperties: "Volver a propiedades", approximateLocation: "Ubicación aproximada", exactLocationNotice: "La ubicación exacta se comparte durante el proceso de visita.",
+    requestInformation: "Solicitar información", rooms: "Habitaciones", area: "Superficie", sale: "En venta", rentLabel: "En arriendo",
   },
   en: {
     buy: "Buy", rent: "Rent", sell: "Sell", favorites: "Favorites", search: "Search",
@@ -84,6 +99,9 @@ export const translations: Record<Locale, Translation> = {
     location: "Location", priceRange: "Price range (CLP)", minPrice: "Minimum price", maxPrice: "Maximum price",
     propertyType: "Property type", operation: "Listing", features: "Features", bedrooms: "Bedrooms", bathrooms: "Bathrooms",
     anyAmount: "Any amount", anyType: "Any type", anyOperation: "Buy or rent", showProperties: "Show properties", clearFilters: "Clear filters", close: "Close",
+    saveFavorite: "Save to favorites", removeFavorite: "Remove from favorites", noImages: "This property has no images available yet.", viewImage: "View image",
+    backToProperties: "Back to properties", approximateLocation: "Approximate location", exactLocationNotice: "The exact location is shared during the viewing process.",
+    requestInformation: "Request information", rooms: "Rooms", area: "Area", sale: "For sale", rentLabel: "For rent",
   },
   pt: {
     buy: "Comprar", rent: "Alugar", sell: "Vender", favorites: "Favoritos", search: "Buscar",
@@ -98,6 +116,9 @@ export const translations: Record<Locale, Translation> = {
     location: "Localização", priceRange: "Faixa de preço (CLP)", minPrice: "Preço mínimo", maxPrice: "Preço máximo",
     propertyType: "Tipo de imóvel", operation: "Operação", features: "Características", bedrooms: "Quartos", bathrooms: "Banheiros",
     anyAmount: "Qualquer quantidade", anyType: "Qualquer tipo", anyOperation: "Comprar ou alugar", showProperties: "Mostrar imóveis", clearFilters: "Limpar filtros", close: "Fechar",
+    saveFavorite: "Salvar nos favoritos", removeFavorite: "Remover dos favoritos", noImages: "Este imóvel ainda não tem imagens disponíveis.", viewImage: "Ver imagem",
+    backToProperties: "Voltar aos imóveis", approximateLocation: "Localização aproximada", exactLocationNotice: "A localização exata é compartilhada durante a visita.",
+    requestInformation: "Solicitar informações", rooms: "Quartos", area: "Área", sale: "À venda", rentLabel: "Para alugar",
   },
   fr: {
     buy: "Acheter", rent: "Louer", sell: "Vendre", favorites: "Favoris", search: "Rechercher",
@@ -112,6 +133,9 @@ export const translations: Record<Locale, Translation> = {
     location: "Emplacement", priceRange: "Fourchette de prix (CLP)", minPrice: "Prix minimum", maxPrice: "Prix maximum",
     propertyType: "Type de propriété", operation: "Opération", features: "Caractéristiques", bedrooms: "Chambres", bathrooms: "Salles de bain",
     anyAmount: "Toute quantité", anyType: "Tout type", anyOperation: "Acheter ou louer", showProperties: "Afficher les propriétés", clearFilters: "Effacer les filtres", close: "Fermer",
+    saveFavorite: "Ajouter aux favoris", removeFavorite: "Retirer des favoris", noImages: "Cette propriété n'a pas encore d'images disponibles.", viewImage: "Voir l'image",
+    backToProperties: "Retour aux propriétés", approximateLocation: "Emplacement approximatif", exactLocationNotice: "L'emplacement exact est partagé lors de la visite.",
+    requestInformation: "Demander des informations", rooms: "Chambres", area: "Surface", sale: "À vendre", rentLabel: "À louer",
   },
   zh: {
     buy: "购买", rent: "租赁", sell: "出售", favorites: "收藏", search: "搜索",
@@ -126,6 +150,9 @@ export const translations: Record<Locale, Translation> = {
     location: "位置", priceRange: "价格范围 (CLP)", minPrice: "最低价格", maxPrice: "最高价格",
     propertyType: "房产类型", operation: "交易类型", features: "房产特点", bedrooms: "卧室", bathrooms: "浴室",
     anyAmount: "不限数量", anyType: "不限类型", anyOperation: "购买或租赁", showProperties: "显示房源", clearFilters: "清除筛选", close: "关闭",
+    saveFavorite: "收藏房源", removeFavorite: "取消收藏", noImages: "该房源暂无图片。", viewImage: "查看图片",
+    backToProperties: "返回房源", approximateLocation: "大概位置", exactLocationNotice: "确切位置将在看房过程中分享。",
+    requestInformation: "请求信息", rooms: "卧室", area: "面积", sale: "出售", rentLabel: "出租",
   },
   ko: {
     buy: "구매", rent: "임대", sell: "판매", favorites: "즐겨찾기", search: "검색",
@@ -140,9 +167,17 @@ export const translations: Record<Locale, Translation> = {
     location: "위치", priceRange: "가격 범위 (CLP)", minPrice: "최저 가격", maxPrice: "최고 가격",
     propertyType: "매물 유형", operation: "거래 유형", features: "특징", bedrooms: "침실", bathrooms: "욕실",
     anyAmount: "수량 무관", anyType: "유형 무관", anyOperation: "구매 또는 임대", showProperties: "매물 보기", clearFilters: "필터 초기화", close: "닫기",
+    saveFavorite: "즐겨찾기에 저장", removeFavorite: "즐겨찾기에서 삭제", noImages: "아직 이용 가능한 이미지가 없습니다.", viewImage: "이미지 보기",
+    backToProperties: "매물로 돌아가기", approximateLocation: "대략적인 위치", exactLocationNotice: "정확한 위치는 방문 과정에서 공유됩니다.",
+    requestInformation: "정보 요청", rooms: "객실", area: "면적", sale: "매매", rentLabel: "임대",
   },
 };
 
 export function isLocale(value: string | undefined): value is Locale {
   return Boolean(value && locales.includes(value as Locale));
+}
+
+export function translateListing(value: string, locale: Locale) {
+  const t = translations[locale];
+  return value === "En venta" ? t.sale : value === "En alquiler" ? t.rentLabel : value;
 }

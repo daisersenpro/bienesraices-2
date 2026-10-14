@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import type { Property } from "../data/properties";
+import type { Locale } from "../i18n/config";
 
 const PropertyMap = dynamic(
   () => import("./property-map").then((module) => module.PropertyMap),
@@ -11,6 +12,6 @@ const PropertyMap = dynamic(
   },
 );
 
-export function PropertyMapLoader({ property }: { property: Property }) {
-  return <PropertyMap property={property} />;
+export function PropertyMapLoader({ property, locale }: { property: Property; locale: Locale }) {
+  return <PropertyMap property={property} locale={locale} />;
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { translations, type Locale } from "../i18n/config";
 
 const propertyTypes = [
   { value: "", label: "Cualquier tipo" },
@@ -27,9 +28,10 @@ type FilterValues = {
   banos: string;
 };
 
-export function PropertyFilters({ initialValues }: { initialValues: FilterValues }) {
+export function PropertyFilters({ initialValues, locale }: { initialValues: FilterValues; locale: Locale }) {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const t = translations[locale];
 
   function applyFilters(formData: FormData) {
     const params = new URLSearchParams();
@@ -59,7 +61,7 @@ export function PropertyFilters({ initialValues }: { initialValues: FilterValues
         aria-haspopup="dialog"
         aria-expanded={isOpen}
       >
-        ⚙ Filtros
+        ⚙ {t.filters}
       </button>
 
       {isOpen && (
@@ -67,10 +69,10 @@ export function PropertyFilters({ initialValues }: { initialValues: FilterValues
           <div className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
             <header className="flex items-center justify-between border-b border-nordic/10 px-6 py-5 sm:px-8">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted">Buscar propiedades</p>
-                <h2 id="filters-title" className="mt-1 text-2xl font-semibold tracking-tight text-nordic">Filtros</h2>
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted">{t.search}</p>
+                <h2 id="filters-title" className="mt-1 text-2xl font-semibold tracking-tight text-nordic">{t.filters}</h2>
               </div>
-              <button type="button" onClick={() => setIsOpen(false)} className="rounded-full p-2 text-xl text-muted transition-colors hover:bg-hint hover:text-nordic" aria-label="Cerrar filtros">
+              <button type="button" onClick={() => setIsOpen(false)} className="rounded-full p-2 text-xl text-muted transition-colors hover:bg-hint hover:text-nordic" aria-label={t.close}>
                 ×
               </button>
             </header>
@@ -78,52 +80,52 @@ export function PropertyFilters({ initialValues }: { initialValues: FilterValues
             <form action={applyFilters} className="overflow-y-auto px-6 py-6 sm:px-8">
               <div className="space-y-8">
                 <section>
-                  <label htmlFor="filter-location" className="mb-3 block text-xs font-semibold uppercase tracking-wider text-muted">Ubicación</label>
+                  <label htmlFor="filter-location" className="mb-3 block text-xs font-semibold uppercase tracking-wider text-muted">{t.location}</label>
                   <div className="flex items-center rounded-lg bg-[#e7f2fb] px-4 focus-within:ring-2 focus-within:ring-mosque">
                     <span className="mr-3 text-lg text-muted">⌖</span>
-                    <input id="filter-location" name="ubicacion" defaultValue={initialValues.ubicacion} className="w-full border-0 bg-transparent py-3 text-nordic outline-none placeholder:text-muted/70 focus:ring-0" placeholder="Ciudad, barrio o dirección" />
+                    <input id="filter-location" name="ubicacion" defaultValue={initialValues.ubicacion} className="w-full border-0 bg-transparent py-3 text-nordic outline-none placeholder:text-muted/70 focus:ring-0" placeholder={t.searchPlaceholder} />
                   </div>
                 </section>
 
                 <section>
-                  <label className="mb-3 block text-xs font-semibold uppercase tracking-wider text-muted">Rango de precio (CLP)</label>
+                  <label className="mb-3 block text-xs font-semibold uppercase tracking-wider text-muted">{t.priceRange}</label>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <FilterInput label="Precio mínimo" name="precioMinimo" defaultValue={initialValues.precioMinimo} placeholder="Ej. 100000000" type="number" />
-                    <FilterInput label="Precio máximo" name="precioMaximo" defaultValue={initialValues.precioMaximo} placeholder="Ej. 500000000" type="number" />
+                    <FilterInput label={t.minPrice} name="precioMinimo" defaultValue={initialValues.precioMinimo} placeholder="100000000" type="number" />
+                    <FilterInput label={t.maxPrice} name="precioMaximo" defaultValue={initialValues.precioMaximo} placeholder="500000000" type="number" />
                   </div>
                 </section>
 
                 <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                  <FilterSelect label="Tipo de propiedad" name="tipo" defaultValue={initialValues.tipo} options={propertyTypes} />
-                  <FilterSelect label="Operación" name="operacion" defaultValue={initialValues.operacion} options={listingTypes} />
+                  <FilterSelect label={t.propertyType} name="tipo" defaultValue={initialValues.tipo} options={propertyTypes.map((option) => ({ ...option, label: option.value === "" ? t.anyType : option.value === "House" ? t.houses : option.value === "Apartment" ? t.apartments : option.value === "Villa" ? t.villas : t.penthouses }))} />
+                  <FilterSelect label={t.operation} name="operacion" defaultValue={initialValues.operacion} options={listingTypes.map((option) => ({ ...option, label: option.value === "" ? t.anyOperation : option.value === "En venta" ? t.sale : t.rentLabel }))} />
                 </section>
 
                 <section>
-                  <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-muted">Características</p>
+                  <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-muted">{t.features}</p>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <FilterSelect
-                      label="Dormitorios"
+                      label={t.bedrooms}
                       name="dormitorios"
                       defaultValue={initialValues.dormitorios}
                       options={[
-                        { value: "", label: "Cualquier cantidad" },
-                        { value: "1", label: "1 o más" },
-                        { value: "2", label: "2 o más" },
-                        { value: "3", label: "3 o más" },
-                        { value: "4", label: "4 o más" },
-                        { value: "5", label: "5 o más" },
+                        { value: "", label: t.anyAmount },
+                        { value: "1", label: "1+" },
+                        { value: "2", label: "2+" },
+                        { value: "3", label: "3+" },
+                        { value: "4", label: "4+" },
+                        { value: "5", label: "5+" },
                       ]}
                     />
                     <FilterSelect
-                      label="Baños"
+                      label={t.bathrooms}
                       name="banos"
                       defaultValue={initialValues.banos}
                       options={[
-                        { value: "", label: "Cualquier cantidad" },
-                        { value: "1", label: "1 o más" },
-                        { value: "2", label: "2 o más" },
-                        { value: "3", label: "3 o más" },
-                        { value: "4", label: "4 o más" },
+                        { value: "", label: t.anyAmount },
+                        { value: "1", label: "1+" },
+                        { value: "2", label: "2+" },
+                        { value: "3", label: "3+" },
+                        { value: "4", label: "4+" },
                       ]}
                     />
                   </div>
@@ -132,10 +134,10 @@ export function PropertyFilters({ initialValues }: { initialValues: FilterValues
 
               <footer className="mt-8 flex items-center justify-between gap-4 border-t border-nordic/10 pt-6">
                 <button type="button" onClick={clearFilters} className="text-sm font-medium text-muted underline decoration-hint underline-offset-4 transition-colors hover:text-nordic">
-                  Limpiar filtros
+                  {t.clearFilters}
                 </button>
                 <button type="submit" className="rounded-lg bg-mosque px-6 py-3 text-sm font-medium text-white shadow-lg shadow-mosque/20 transition-colors hover:bg-nordic">
-                  Mostrar propiedades →
+                  {t.showProperties} →
                 </button>
               </footer>
             </form>

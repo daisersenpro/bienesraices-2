@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import { formatPrice, type Property } from "../data/properties";
+import { translations, translateListing, type Locale } from "../i18n/config";
 
-export function PropertyCard({ property }: { property: Property }) {
+export function PropertyCard({ property, locale }: { property: Property; locale: Locale }) {
   const [saved, setSaved] = useState(false);
+  const t = translations[locale];
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#c8e5f8] bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-soft">
@@ -19,7 +21,7 @@ export function PropertyCard({ property }: { property: Property }) {
         </Link>
         <button
           type="button"
-          aria-label={saved ? `Quitar ${property.name} de favoritos` : `Guardar ${property.name} en favoritos`}
+          aria-label={saved ? `${t.removeFavorite}: ${property.name}` : `${t.saveFavorite}: ${property.name}`}
           aria-pressed={saved}
           onClick={() => setSaved(!saved)}
           className={`absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-xl transition-colors hover:bg-mosque hover:text-white ${saved ? "text-mosque" : "text-nordic"}`}
@@ -27,7 +29,7 @@ export function PropertyCard({ property }: { property: Property }) {
           {saved ? "♥" : "♡"}
         </button>
         <div className="absolute bottom-3 left-3 rounded bg-nordic/90 px-2 py-1 text-xs font-bold uppercase tracking-wide text-white">
-          {property.listing}
+          {translateListing(property.listing, locale)}
         </div>
       </div>
       <div className="flex flex-grow flex-col p-4">

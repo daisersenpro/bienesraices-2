@@ -4,6 +4,7 @@ import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import type { Property } from "../data/properties";
+import { translations, type Locale } from "../i18n/config";
 
 const markerIcon = new L.Icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
@@ -15,11 +16,12 @@ const markerIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
-export function PropertyMap({ property }: { property: Property }) {
+export function PropertyMap({ property, locale }: { property: Property; locale: Locale }) {
+  const t = translations[locale];
   if (property.latitude === undefined || property.longitude === undefined) {
     return (
       <div className="flex h-80 items-center justify-center rounded-2xl bg-hint px-6 text-center text-sm text-muted">
-        La ubicación del mapa aún no está disponible para esta propiedad.
+        {t.noProperties}
       </div>
     );
   }

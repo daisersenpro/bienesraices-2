@@ -2,15 +2,17 @@
 
 import { useState } from "react";
 import type { PropertyImage } from "../data/properties";
+import { translations, type Locale } from "../i18n/config";
 
-export function PropertyGallery({ images, name }: { images: PropertyImage[]; name: string }) {
+export function PropertyGallery({ images, name, locale }: { images: PropertyImage[]; name: string; locale: Locale }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const currentImage = images[selectedIndex];
+  const t = translations[locale];
 
   if (!currentImage) {
     return (
       <div className="flex aspect-[16/10] items-center justify-center rounded-2xl bg-hint text-sm text-muted">
-        Esta propiedad aún no tiene imágenes disponibles.
+        {t.noImages}
       </div>
     );
   }
@@ -27,7 +29,7 @@ export function PropertyGallery({ images, name }: { images: PropertyImage[]; nam
               key={image.id ?? image.url}
               type="button"
               onClick={() => setSelectedIndex(index)}
-              aria-label={`Ver imagen ${index + 1} de ${images.length}`}
+              aria-label={`${t.viewImage} ${index + 1} ${t.of} ${images.length}`}
               aria-pressed={selectedIndex === index}
               className={`overflow-hidden rounded-lg border-2 transition ${
                 selectedIndex === index ? "border-mosque" : "border-transparent"
