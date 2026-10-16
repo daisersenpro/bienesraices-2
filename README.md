@@ -56,16 +56,17 @@ La migración de galería y coordenadas se encuentra en [`supabase/migrations/20
 La migración de filtros de búsqueda se encuentra en [`supabase/migrations/20261013_property_search_filters.sql`](./supabase/migrations/20261013_property_search_filters.sql).
 Los datos adicionales para probar búsqueda, filtros y galerías se encuentran en [`supabase/migrations/20261013_properties_development_seed.sql`](./supabase/migrations/20261013_properties_development_seed.sql). Ejecuta primero la migración de filtros y después el seed de propiedades.
 
-### Autenticación con Google y GitHub
+### Autenticación con GitHub y correo electrónico
 
-La pantalla [`app/login/page.tsx`](./app/login/page.tsx) usa Supabase Auth para iniciar sesión con Google o GitHub. Para habilitar los proveedores en el proyecto:
+La pantalla [`app/login/page.tsx`](./app/login/page.tsx) usa Supabase Auth para iniciar sesión con GitHub o con correo electrónico y contraseña. También permite crear cuentas manuales para desarrollo sin depender de proveedores que requieran facturación.
 
-1. En Supabase, entra a **Authentication → Providers** y activa **Google** y **GitHub**.
-2. Configura las credenciales OAuth de cada proveedor.
+1. En Supabase, entra a **Authentication → Providers** y activa **Email** y **GitHub**.
+2. Configura únicamente las credenciales OAuth de GitHub.
 3. En Supabase, agrega como redirect URL de desarrollo `http://localhost:3000/auth/callback`.
 4. En producción, agrega la URL equivalente de tu dominio.
+5. Si está activa la confirmación de correo, las cuentas manuales deben confirmar su email antes de iniciar sesión.
 
-La aplicación usa el `avatar_url` o `picture` entregado por el proveedor y lo muestra en el navbar cuando existe. Si el proveedor no entrega avatar, se muestran las iniciales del usuario.
+La aplicación usa el `avatar_url` o `picture` entregado por GitHub y lo muestra en el navbar cuando existe. Si el proveedor no entrega avatar, se muestran las iniciales del usuario.
 
 ## Desarrollo
 

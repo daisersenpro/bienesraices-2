@@ -38,6 +38,16 @@ type Translation = {
   profile: string;
   login: string;
   logout: string;
+  welcome: string;
+  loginDescription: string;
+  continueGithub: string;
+  email: string;
+  password: string;
+  signIn: string;
+  signUp: string;
+  switchToSignUp: string;
+  switchToSignIn: string;
+  accountCreated: string;
   language: string;
   headlineStart: string;
   headlineHighlight: string;
@@ -79,7 +89,7 @@ export const translations: Record<Locale, Translation> = {
     viewAll: "Ver todas", marketNews: "Novedades del mercado", marketNewsDescription: "Nuevas oportunidades añadidas esta semana.",
     noProperties: "No encontramos propiedades", noPropertiesDescription: "Prueba con otra ubicación o tipo de propiedad.",
     previous: "Anterior", next: "Siguiente", page: "Página", of: "de", notifications: "Notificaciones",
-    profile: "Perfil", login: "Login", logout: "Cerrar sesión", language: "Idioma",
+    profile: "Perfil", login: "Login", logout: "Cerrar sesión", welcome: "Bienvenido a Casas SenPro", loginDescription: "Descubre propiedades exclusivas en todo el mundo.", continueGithub: "Continuar con GitHub", email: "Correo electrónico", password: "Contraseña", signIn: "Iniciar sesión", signUp: "Crear cuenta", switchToSignUp: "¿No tienes una cuenta? Regístrate", switchToSignIn: "¿Ya tienes una cuenta? Inicia sesión", accountCreated: "Cuenta creada. Revisa tu correo para confirmar el acceso.", language: "Idioma",
     headlineStart: "Encuentra tu", headlineHighlight: "hogar ideal",
     location: "Ubicación", priceRange: "Rango de precio (CLP)", minPrice: "Precio mínimo", maxPrice: "Precio máximo",
     propertyType: "Tipo de propiedad", operation: "Operación", features: "Características", bedrooms: "Dormitorios", bathrooms: "Baños",
@@ -96,7 +106,7 @@ export const translations: Record<Locale, Translation> = {
     viewAll: "View all", marketNews: "New on the market", marketNewsDescription: "New opportunities added this week.",
     noProperties: "No properties found", noPropertiesDescription: "Try another location or property type.",
     previous: "Previous", next: "Next", page: "Page", of: "of", notifications: "Notifications",
-    profile: "Profile", login: "Login", logout: "Sign out", language: "Language",
+    profile: "Profile", login: "Login", logout: "Sign out", welcome: "Welcome to Casas SenPro", loginDescription: "Discover exclusive properties around the world.", continueGithub: "Continue with GitHub", email: "Email", password: "Password", signIn: "Sign in", signUp: "Create account", switchToSignUp: "Don't have an account? Sign up", switchToSignIn: "Already have an account? Sign in", accountCreated: "Account created. Check your email to confirm access.", language: "Language",
     headlineStart: "Find your", headlineHighlight: "ideal home",
     location: "Location", priceRange: "Price range (CLP)", minPrice: "Minimum price", maxPrice: "Maximum price",
     propertyType: "Property type", operation: "Listing", features: "Features", bedrooms: "Bedrooms", bathrooms: "Bathrooms",
@@ -113,7 +123,7 @@ export const translations: Record<Locale, Translation> = {
     viewAll: "Ver todas", marketNews: "Novidades do mercado", marketNewsDescription: "Novas oportunidades adicionadas esta semana.",
     noProperties: "Nenhum imóvel encontrado", noPropertiesDescription: "Tente outra localização ou tipo de imóvel.",
     previous: "Anterior", next: "Próxima", page: "Página", of: "de", notifications: "Notificações",
-    profile: "Perfil", login: "Login", logout: "Sair", language: "Idioma",
+    profile: "Perfil", login: "Login", logout: "Sair", welcome: "Bem-vindo à Casas SenPro", loginDescription: "Descubra imóveis exclusivos em todo o mundo.", continueGithub: "Continuar com GitHub", email: "E-mail", password: "Senha", signIn: "Entrar", signUp: "Criar conta", switchToSignUp: "Não tem uma conta? Cadastre-se", switchToSignIn: "Já tem uma conta? Entre", accountCreated: "Conta criada. Verifique seu e-mail para confirmar o acesso.", language: "Idioma",
     headlineStart: "Encontre seu", headlineHighlight: "lar ideal",
     location: "Localização", priceRange: "Faixa de preço (CLP)", minPrice: "Preço mínimo", maxPrice: "Preço máximo",
     propertyType: "Tipo de imóvel", operation: "Operação", features: "Características", bedrooms: "Quartos", bathrooms: "Banheiros",
@@ -130,7 +140,7 @@ export const translations: Record<Locale, Translation> = {
     viewAll: "Voir tout", marketNews: "Nouveautés du marché", marketNewsDescription: "De nouvelles opportunités chaque semaine.",
     noProperties: "Aucune propriété trouvée", noPropertiesDescription: "Essayez un autre lieu ou type de propriété.",
     previous: "Précédente", next: "Suivante", page: "Page", of: "sur", notifications: "Notifications",
-    profile: "Profil", login: "Connexion", logout: "Se déconnecter", language: "Langue",
+    profile: "Profil", login: "Connexion", logout: "Se déconnecter", welcome: "Bienvenue chez Casas SenPro", loginDescription: "Découvrez des propriétés exclusives dans le monde entier.", continueGithub: "Continuer avec GitHub", email: "E-mail", password: "Mot de passe", signIn: "Se connecter", signUp: "Créer un compte", switchToSignUp: "Vous n'avez pas de compte ? Inscrivez-vous", switchToSignIn: "Vous avez déjà un compte ? Connectez-vous", accountCreated: "Compte créé. Consultez votre e-mail pour confirmer l'accès.", language: "Langue",
     headlineStart: "Trouvez votre", headlineHighlight: "maison idéale",
     location: "Emplacement", priceRange: "Fourchette de prix (CLP)", minPrice: "Prix minimum", maxPrice: "Prix maximum",
     propertyType: "Type de propriété", operation: "Opération", features: "Caractéristiques", bedrooms: "Chambres", bathrooms: "Salles de bain",
@@ -147,7 +157,7 @@ export const translations: Record<Locale, Translation> = {
     viewAll: "查看全部", marketNews: "市场新房源", marketNewsDescription: "本周新增的房产机会。",
     noProperties: "未找到房源", noPropertiesDescription: "请尝试其他位置或房产类型。",
     previous: "上一页", next: "下一页", page: "第", of: "页", notifications: "通知",
-    profile: "个人资料", login: "登录", logout: "退出登录", language: "语言",
+    profile: "个人资料", login: "登录", logout: "退出登录", welcome: "欢迎来到 Casas SenPro", loginDescription: "探索世界各地的优质房产。", continueGithub: "使用 GitHub 继续", email: "电子邮箱", password: "密码", signIn: "登录", signUp: "创建账户", switchToSignUp: "还没有账户？注册", switchToSignIn: "已有账户？登录", accountCreated: "账户已创建。请查看邮箱确认访问。", language: "语言",
     headlineStart: "寻找您的", headlineHighlight: "理想家园",
     location: "位置", priceRange: "价格范围 (CLP)", minPrice: "最低价格", maxPrice: "最高价格",
     propertyType: "房产类型", operation: "交易类型", features: "房产特点", bedrooms: "卧室", bathrooms: "浴室",
@@ -164,7 +174,7 @@ export const translations: Record<Locale, Translation> = {
     viewAll: "모두 보기", marketNews: "새로운 매물", marketNewsDescription: "이번 주에 추가된 새로운 기회입니다.",
     noProperties: "매물을 찾을 수 없습니다", noPropertiesDescription: "다른 위치나 매물 유형을 시도해 보세요.",
     previous: "이전", next: "다음", page: "페이지", of: "/", notifications: "알림",
-    profile: "프로필", login: "로그인", logout: "로그아웃", language: "언어",
+    profile: "프로필", login: "로그인", logout: "로그아웃", welcome: "Casas SenPro에 오신 것을 환영합니다", loginDescription: "전 세계의 특별한 매물을 만나보세요.", continueGithub: "GitHub로 계속하기", email: "이메일", password: "비밀번호", signIn: "로그인", signUp: "계정 만들기", switchToSignUp: "계정이 없나요? 가입하기", switchToSignIn: "이미 계정이 있나요? 로그인", accountCreated: "계정이 생성되었습니다. 이메일을 확인하여 액세스를 승인하세요.", language: "언어",
     headlineStart: "당신의", headlineHighlight: "이상적인 집을 찾아보세요",
     location: "위치", priceRange: "가격 범위 (CLP)", minPrice: "최저 가격", maxPrice: "최고 가격",
     propertyType: "매물 유형", operation: "거래 유형", features: "특징", bedrooms: "침실", bathrooms: "욕실",

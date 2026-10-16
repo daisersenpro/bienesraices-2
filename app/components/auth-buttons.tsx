@@ -1,48 +1,108 @@
 "use client";
 
-import { useState } from "react";
+import { type FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 
-type Provider = "google" | "github";
+type Mode = "login" | "signup";
 
-export function AuthButtons({ labels }: { labels: { google: string; github: string } }) {
-  const [loadingProvider, setLoadingProvider] = useState<Provider | null>(null);
+type AuthLabels = {
+  github: string;
+  email: string;
+  password: string;
+  login: string;
+  signup: string;
+  switchToSignup: string;
+  switchToLogin: string;
+  accountCreated: string;
+};
+
+export function AuthButtons({ labels }: { labels: AuthLabels }) {
+  const router = useRouter();
+  const [mode, setMode] = useState<Mode>("login");
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
-  async function signIn(provider: Provider) {
+  async function signInWithGithub() {
     setError("");
-    setLoadingProvider(provider);
+    setMessage("");
+    setLoading(true);
     const supabase = getSupabaseBrowserClient();
     const { error: authError } = await supabase.auth.signInWithOAuth({
-      provider,
+      provider: "github",
       options: { redirectTo: `${window.location.origin}/auth/callback` },
     });
 
     if (authError) {
-      setLoadingProvider(null);
+      setLoading(false);
       setError(authError.message);
     }
   }
 
+  async function signInWithEmail(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError("");
+    setMessage("");
+    setLoading(true);
+    const supabase = getSupabaseBrowserClient();
+    const result = mode === "login"
+      ? await supabase.auth.signInWithPassword({ email, password })
+      : await supabase.auth.signUp({ email, password });
+
+    setLoading(false);
+    if (result.error) {
+      setError(result.error.message);
+      return;
+    }
+
+    if (mode === "signup" && !result.data.session) {
+      setMessage(labels.accountCreated);
+      setMode("login");
+      return;
+    }
+
+    router.push("/");
+  }
+
   return (
     <div className="space-y-4">
-      <button type="button" onClick={() => signIn("google")} disabled={loadingProvider !== null} className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-lg border border-[#dce7ed] bg-white p-3.5 font-medium text-nordic transition-all duration-300 hover:-translate-y-0.5 hover:shadow-soft disabled:cursor-wait disabled:opacity-60">
-        <span className="absolute inset-0 translate-y-full bg-hint/30 transition-transform duration-300 group-hover:translate-y-0" />
-        <GoogleIcon />
-        <span className="relative z-10">{loadingProvider === "google" ? "..." : labels.google}</span>
-      </button>
-      <button type="button" onClick={() => signIn("github")} disabled={loadingProvider !== null} className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-lg border border-[#dce7ed] bg-white p-3.5 font-medium text-nordic transition-all duration-300 hover:-translate-y-0.5 hover:shadow-soft disabled:cursor-wait disabled:opacity-60">
+      <button type="button" onClick={signInWithGithub} disabled={loading} className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-lg border border-[#dce7ed] bg-white p-3.5 font-medium text-nordic transition-all duration-300 hover:-translate-y-0.5 hover:shadow-soft disabled:cursor-wait disabled:opacity-60">
         <span className="absolute inset-0 translate-y-full bg-hint/30 transition-transform duration-300 group-hover:translate-y-0" />
         <GithubIcon />
-        <span className="relative z-10">{loadingProvider === "github" ? "..." : labels.github}</span>
+        <span className="relative z-10">{loading ? "..." : labels.github}</span>
       </button>
+
+      <div className="relative flex items-center py-1">
+        <div className="flex-grow border-t border-[#dce7ed]" />
+        <span className="mx-3 flex-shrink text-xs text-nordic/45">o</span>
+        <div className="flex-grow border-t border-[#dce7ed]" />
+      </div>
+
+      <form onSubmit={signInWithEmail} className="space-y-3">
+        <label className="block text-sm font-medium text-nordic">
+          {labels.email}
+          <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required autoComplete="email" className="mt-1.5 w-full rounded-lg border border-[#dce7ed] px-3.5 py-3 font-normal outline-none transition focus:border-mosque focus:ring-2 focus:ring-mosque/20" />
+        </label>
+        <label className="block text-sm font-medium text-nordic">
+          {labels.password}
+          <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} required minLength={6} autoComplete={mode === "login" ? "current-password" : "new-password"} className="mt-1.5 w-full rounded-lg border border-[#dce7ed] px-3.5 py-3 font-normal outline-none transition focus:border-mosque focus:ring-2 focus:ring-mosque/20" />
+        </label>
+        <button type="submit" disabled={loading} className="w-full rounded-lg bg-mosque p-3.5 font-semibold text-white transition hover:bg-nordic disabled:cursor-wait disabled:opacity-60">
+          {loading ? "..." : mode === "login" ? labels.login : labels.signup}
+        </button>
+      </form>
+
+      <button type="button" onClick={() => { setMode(mode === "login" ? "signup" : "login"); setError(""); setMessage(""); }} className="w-full text-center text-sm font-medium text-mosque hover:text-nordic">
+        {mode === "login" ? labels.switchToSignup : labels.switchToLogin}
+      </button>
+
+      {message && <p role="status" className="text-center text-sm text-green-700">{message}</p>}
       {error && <p role="alert" className="text-center text-sm text-red-600">{error}</p>}
     </div>
   );
-}
-
-function GoogleIcon() {
-  return <svg aria-hidden="true" className="relative z-10 h-5 w-5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" /><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" /><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" /><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" /></svg>;
 }
 
 function GithubIcon() {
