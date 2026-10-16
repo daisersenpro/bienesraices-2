@@ -46,7 +46,7 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
           </Link>
           <div className="flex items-center gap-3">
             <LanguageSelector locale={locale} label={t.language} />
-            <AuthProfile label={t.login} />
+            <AuthProfile labels={{ login: t.login, logout: t.logout, profile: t.profile }} />
           </div>
           </div>
         </div>

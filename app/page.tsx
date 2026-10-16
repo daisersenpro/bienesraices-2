@@ -83,7 +83,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             <LanguageSelector locale={locale} label={t.language} />
             <button type="button" aria-label={t.search}>⌕</button>
             <button type="button" aria-label={t.notifications} className="relative">♧<span className="absolute -right-1 top-0 h-2 w-2 rounded-full bg-red-500" /></button>
-            <AuthProfile label={t.login} />
+            <AuthProfile labels={{ login: t.login, logout: t.logout, profile: t.profile }} />
           </div>
         </div>
       </nav>
