@@ -1,6 +1,7 @@
 import { PropertyCard } from "./components/property-card";
 import { PropertyFilters } from "./components/property-filters";
 import { LanguageSelector } from "./components/language-selector";
+import { AuthProfile } from "./components/auth-profile";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { formatPrice, type Property } from "./data/properties";
@@ -82,7 +83,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             <LanguageSelector locale={locale} label={t.language} />
             <button type="button" aria-label={t.search}>⌕</button>
             <button type="button" aria-label={t.notifications} className="relative">♧<span className="absolute -right-1 top-0 h-2 w-2 rounded-full bg-red-500" /></button>
-            <button type="button" aria-label={t.profile} className="hidden h-9 w-9 items-center justify-center rounded-full bg-hint text-sm font-semibold sm:flex">CS</button>
+            <AuthProfile label={t.login} />
           </div>
         </div>
       </nav>

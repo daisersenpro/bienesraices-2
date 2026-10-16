@@ -8,6 +8,7 @@ import { getPropertyBySlug } from "../../data/property-repository";
 import { cookies } from "next/headers";
 import { isLocale, translateListing, translations, type Locale } from "../../i18n/config";
 import { LanguageSelector } from "../../components/language-selector";
+import { AuthProfile } from "../../components/auth-profile";
 
 export const instant = false;
 
@@ -43,7 +44,10 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-nordic text-lg text-white">⌂</span>
             <span className="text-xl font-semibold tracking-tight text-nordic">Casas SenPro</span>
           </Link>
-          <LanguageSelector locale={locale} label={t.language} />
+          <div className="flex items-center gap-3">
+            <LanguageSelector locale={locale} label={t.language} />
+            <AuthProfile label={t.login} />
+          </div>
           </div>
         </div>
       </nav>

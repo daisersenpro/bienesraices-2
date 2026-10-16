@@ -36,6 +36,7 @@ type Translation = {
   of: string;
   notifications: string;
   profile: string;
+  login: string;
   language: string;
   headlineStart: string;
   headlineHighlight: string;
@@ -77,7 +78,7 @@ export const translations: Record<Locale, Translation> = {
     viewAll: "Ver todas", marketNews: "Novedades del mercado", marketNewsDescription: "Nuevas oportunidades añadidas esta semana.",
     noProperties: "No encontramos propiedades", noPropertiesDescription: "Prueba con otra ubicación o tipo de propiedad.",
     previous: "Anterior", next: "Siguiente", page: "Página", of: "de", notifications: "Notificaciones",
-    profile: "Perfil", language: "Idioma",
+    profile: "Perfil", login: "Login", language: "Idioma",
     headlineStart: "Encuentra tu", headlineHighlight: "hogar ideal",
     location: "Ubicación", priceRange: "Rango de precio (CLP)", minPrice: "Precio mínimo", maxPrice: "Precio máximo",
     propertyType: "Tipo de propiedad", operation: "Operación", features: "Características", bedrooms: "Dormitorios", bathrooms: "Baños",
@@ -94,7 +95,7 @@ export const translations: Record<Locale, Translation> = {
     viewAll: "View all", marketNews: "New on the market", marketNewsDescription: "New opportunities added this week.",
     noProperties: "No properties found", noPropertiesDescription: "Try another location or property type.",
     previous: "Previous", next: "Next", page: "Page", of: "of", notifications: "Notifications",
-    profile: "Profile", language: "Language",
+    profile: "Profile", login: "Login", language: "Language",
     headlineStart: "Find your", headlineHighlight: "ideal home",
     location: "Location", priceRange: "Price range (CLP)", minPrice: "Minimum price", maxPrice: "Maximum price",
     propertyType: "Property type", operation: "Listing", features: "Features", bedrooms: "Bedrooms", bathrooms: "Bathrooms",
@@ -111,7 +112,7 @@ export const translations: Record<Locale, Translation> = {
     viewAll: "Ver todas", marketNews: "Novidades do mercado", marketNewsDescription: "Novas oportunidades adicionadas esta semana.",
     noProperties: "Nenhum imóvel encontrado", noPropertiesDescription: "Tente outra localização ou tipo de imóvel.",
     previous: "Anterior", next: "Próxima", page: "Página", of: "de", notifications: "Notificações",
-    profile: "Perfil", language: "Idioma",
+    profile: "Perfil", login: "Login", language: "Idioma",
     headlineStart: "Encontre seu", headlineHighlight: "lar ideal",
     location: "Localização", priceRange: "Faixa de preço (CLP)", minPrice: "Preço mínimo", maxPrice: "Preço máximo",
     propertyType: "Tipo de imóvel", operation: "Operação", features: "Características", bedrooms: "Quartos", bathrooms: "Banheiros",
@@ -128,7 +129,7 @@ export const translations: Record<Locale, Translation> = {
     viewAll: "Voir tout", marketNews: "Nouveautés du marché", marketNewsDescription: "De nouvelles opportunités chaque semaine.",
     noProperties: "Aucune propriété trouvée", noPropertiesDescription: "Essayez un autre lieu ou type de propriété.",
     previous: "Précédente", next: "Suivante", page: "Page", of: "sur", notifications: "Notifications",
-    profile: "Profil", language: "Langue",
+    profile: "Profil", login: "Connexion", language: "Langue",
     headlineStart: "Trouvez votre", headlineHighlight: "maison idéale",
     location: "Emplacement", priceRange: "Fourchette de prix (CLP)", minPrice: "Prix minimum", maxPrice: "Prix maximum",
     propertyType: "Type de propriété", operation: "Opération", features: "Caractéristiques", bedrooms: "Chambres", bathrooms: "Salles de bain",
@@ -145,7 +146,7 @@ export const translations: Record<Locale, Translation> = {
     viewAll: "查看全部", marketNews: "市场新房源", marketNewsDescription: "本周新增的房产机会。",
     noProperties: "未找到房源", noPropertiesDescription: "请尝试其他位置或房产类型。",
     previous: "上一页", next: "下一页", page: "第", of: "页", notifications: "通知",
-    profile: "个人资料", language: "语言",
+    profile: "个人资料", login: "登录", language: "语言",
     headlineStart: "寻找您的", headlineHighlight: "理想家园",
     location: "位置", priceRange: "价格范围 (CLP)", minPrice: "最低价格", maxPrice: "最高价格",
     propertyType: "房产类型", operation: "交易类型", features: "房产特点", bedrooms: "卧室", bathrooms: "浴室",
@@ -162,7 +163,7 @@ export const translations: Record<Locale, Translation> = {
     viewAll: "모두 보기", marketNews: "새로운 매물", marketNewsDescription: "이번 주에 추가된 새로운 기회입니다.",
     noProperties: "매물을 찾을 수 없습니다", noPropertiesDescription: "다른 위치나 매물 유형을 시도해 보세요.",
     previous: "이전", next: "다음", page: "페이지", of: "/", notifications: "알림",
-    profile: "프로필", language: "언어",
+    profile: "프로필", login: "로그인", language: "언어",
     headlineStart: "당신의", headlineHighlight: "이상적인 집을 찾아보세요",
     location: "위치", priceRange: "가격 범위 (CLP)", minPrice: "최저 가격", maxPrice: "최고 가격",
     propertyType: "매물 유형", operation: "거래 유형", features: "특징", bedrooms: "침실", bathrooms: "욕실",
