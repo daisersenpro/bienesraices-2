@@ -68,6 +68,20 @@ La pantalla [`app/login/page.tsx`](./app/login/page.tsx) usa Supabase Auth para 
 
 La aplicación usa el `avatar_url` o `picture` entregado por GitHub y lo muestra en el navbar cuando existe. Si el proveedor no entrega avatar, se muestran las iniciales del usuario.
 
+### Dashboard administrativo y roles
+
+El dashboard protegido está disponible en [`/admin`](./app/admin/page.tsx). Permite consultar las propiedades actuales y cambiar el rol de los usuarios autenticados entre `user`, `editor` y `admin`.
+
+Ejecuta [`supabase/migrations/20261019_user_roles.sql`](./supabase/migrations/20261019_user_roles.sql) en el SQL Editor de Supabase. La migración crea `public.user_roles`, sincroniza nuevos usuarios de Auth mediante un trigger y activa políticas RLS. Después de ejecutarla, promueve manualmente al primer administrador:
+
+```sql
+update public.user_roles
+set role = 'admin'
+where email = 'tu-correo@example.com';
+```
+
+La protección se realiza en `proxy.ts` para redirigir solicitudes no autorizadas y se repite en la página y en la Server Action. No se utiliza la service role key en el navegador ni en el dashboard.
+
 ## Desarrollo
 
 Inicia el servidor de desarrollo:
