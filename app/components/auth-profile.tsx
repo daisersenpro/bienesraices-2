@@ -6,20 +6,26 @@ import type { AuthChangeEvent, Session, User } from "@supabase/supabase-js";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 
 export function AuthProfile({ labels }: { labels: { login: string; logout: string; profile: string } }) {
-  const [user, setUser] = useState<{ name: string; avatar: string | null } | null>(null);
+  const [user, setUser] = useState<{ name: string; avatar: string | null; isAdmin: boolean } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [logoutError, setLogoutError] = useState("");
 
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
-    void supabase.auth.getUser().then(({ data }: { data: { user: User | null } }) => {
-      setUser(data.user ? mapUser(data.user) : null);
+    async function loadUser(authUser: User | null) {
+      if (!authUser) {
+        setUser(null);
+        setIsLoading(false);
+        return;
+      }
+      const { data: role } = await supabase.from("user_roles").select("role").eq("user_id", authUser.id).maybeSingle();
+      setUser({ ...mapUser(authUser), isAdmin: role?.role === "admin" });
       setIsLoading(false);
-    });
+    }
+    void supabase.auth.getUser().then(({ data }: { data: { user: User | null } }) => loadUser(data.user));
     const { data: listener } = supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
-      setUser(session?.user ? mapUser(session.user) : null);
-      setIsLoading(false);
+      void loadUser(session?.user ?? null);
     });
     return () => listener.subscription.unsubscribe();
   }, []);
@@ -48,6 +54,12 @@ export function AuthProfile({ labels }: { labels: { login: string; logout: strin
       {isOpen && (
         <div role="menu" className="absolute right-0 top-full z-[70] mt-2 min-w-48 rounded-xl border border-nordic/10 bg-white p-2 shadow-soft">
           <p className="truncate px-3 py-2 text-xs text-muted">{user.name}</p>
+          {user.isAdmin && (
+            <>
+              <Link href="/admin/properties" role="menuitem" onClick={() => setIsOpen(false)} className="block rounded-lg px-3 py-2 text-left text-sm font-medium text-nordic transition-colors hover:bg-hint hover:text-mosque">Administrar propiedades</Link>
+              <Link href="/admin/users" role="menuitem" onClick={() => setIsOpen(false)} className="block rounded-lg px-3 py-2 text-left text-sm font-medium text-nordic transition-colors hover:bg-hint hover:text-mosque">Administrar usuarios</Link>
+            </>
+          )}
           <button
             type="button"
             role="menuitem"

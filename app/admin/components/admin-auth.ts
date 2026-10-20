@@ -13,5 +13,5 @@ export async function requireAdmin() {
     .maybeSingle();
   if (currentRole?.role !== "admin") redirect("/");
 
-  return supabase;
+  return { supabase, user };
 }

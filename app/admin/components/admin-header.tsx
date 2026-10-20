@@ -1,6 +1,8 @@
 import Link from "next/link";
+import type { User } from "@supabase/supabase-js";
+import { AdminProfileMenu } from "./admin-profile-menu";
 
-export function AdminHeader({ active }: { active: "properties" | "users" }) {
+export function AdminHeader({ active, user }: { active: "properties" | "users"; user: User }) {
   return (
     <nav className="border-b border-nordic/5 bg-white">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -14,7 +16,10 @@ export function AdminHeader({ active }: { active: "properties" | "users" }) {
             <NavLink href="/admin/users" active={active === "users"}>Usuarios</NavLink>
           </div>
         </div>
-        <Link href="/" className="text-sm font-medium text-nordic/60 transition-colors hover:text-mosque">Volver al sitio</Link>
+        <div className="flex items-center gap-4">
+          <Link href="/" className="text-sm font-medium text-nordic/60 transition-colors hover:text-mosque">Volver al sitio</Link>
+          <div className="border-l border-nordic/10 pl-4"><AdminProfileMenu user={user} /></div>
+        </div>
       </div>
     </nav>
   );
