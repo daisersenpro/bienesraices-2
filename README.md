@@ -70,7 +70,12 @@ La aplicación usa el `avatar_url` o `picture` entregado por GitHub y lo muestra
 
 ### Dashboard administrativo y roles
 
-El dashboard protegido está disponible en [`/admin`](./app/admin/page.tsx). Permite consultar las propiedades actuales y cambiar el rol de los usuarios autenticados entre `user`, `editor` y `admin`.
+El dashboard protegido está disponible en [`/admin`](./app/admin/page.tsx) y redirige a las pantallas dedicadas:
+
+- [`/admin/properties`](./app/admin/properties/page.tsx): gestión visual de propiedades, métricas y enlaces a sus detalles.
+- [`/admin/users`](./app/admin/users/page.tsx): directorio visual de usuarios y edición de roles.
+
+Ambas vistas requieren el rol `admin` y siguen la paleta actual de la aplicación.
 
 Ejecuta [`supabase/migrations/20261019_user_roles.sql`](./supabase/migrations/20261019_user_roles.sql) en el SQL Editor de Supabase. La migración crea `public.user_roles`, sincroniza nuevos usuarios de Auth mediante un trigger y activa políticas RLS. Después de ejecutarla, promueve manualmente al primer administrador:
 
