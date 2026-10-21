@@ -87,6 +87,8 @@ where email = 'tu-correo@example.com';
 
 La protección se realiza en `proxy.ts` para redirigir solicitudes no autorizadas y se repite en la página y en la Server Action. No se utiliza la service role key en el navegador ni en el dashboard.
 
+El formulario de administración de propiedades está disponible en [`/admin/properties/new`](./app/admin/properties/new/page.tsx) y la edición en [`/admin/properties/[id]/edit`](./app/admin/properties/[id]/edit/page.tsx). Para habilitar altas, edición de propiedades y carga de imágenes, ejecuta también [`supabase/migrations/20261021_property_management.sql`](./supabase/migrations/20261021_property_management.sql). Esta migración crea el bucket público `property-images`, añade `description` y configura políticas para administradores. Las imágenes se guardan en Storage y sus URLs en `property_images`.
+
 ## Desarrollo
 
 Inicia el servidor de desarrollo:

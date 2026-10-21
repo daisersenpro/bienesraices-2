@@ -12,6 +12,7 @@ create table if not exists public.properties (
   bedrooms integer not null check (bedrooms >= 0),
   bathrooms numeric(3, 1) not null check (bathrooms >= 0),
   area text not null,
+  description text not null default '',
   image_url text not null,
   label text,
   featured boolean not null default false,

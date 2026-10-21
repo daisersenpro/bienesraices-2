@@ -56,7 +56,7 @@ export default async function AdminPropertiesPage({ searchParams }: PageProps) {
           </div>
           <div className="flex items-center gap-3">
             <button type="button" className="inline-flex items-center gap-2 rounded-lg border border-nordic/10 bg-white px-4 py-2.5 text-sm font-medium shadow-sm transition hover:bg-hint">☷ Filtrar</button>
-            <button type="button" className="inline-flex items-center gap-2 rounded-lg bg-mosque px-5 py-2.5 text-sm font-medium text-white shadow-md shadow-mosque/20 transition hover:-translate-y-0.5 hover:bg-nordic">＋ Nueva propiedad</button>
+            <Link href="/admin/properties/new" className="inline-flex items-center gap-2 rounded-lg bg-mosque px-5 py-2.5 text-sm font-medium text-white shadow-md shadow-mosque/20 transition hover:-translate-y-0.5 hover:bg-nordic">＋ Nueva propiedad</Link>
           </div>
         </header>
 
