@@ -17,6 +17,7 @@ type PropertyRow = {
   listing_type: string;
   image_url: string;
   featured: boolean;
+  is_active: boolean;
 };
 
 type PageProps = { searchParams: Promise<{ page?: string }> };
@@ -31,14 +32,14 @@ export default async function AdminPropertiesPage({ searchParams }: PageProps) {
   const from = (page - 1) * PAGE_SIZE;
   const { data, error } = await supabase
     .from("properties")
-    .select("id, slug, name, location, price, property_type, listing_type, image_url, featured", { count: "exact" })
+    .select("id, slug, name, location, price, property_type, listing_type, image_url, featured, is_active", { count: "exact" })
     .order("created_at", { ascending: false })
     .range(from, from + PAGE_SIZE - 1);
   if (error) throw new Error(`No se pudieron cargar las propiedades: ${error.message}`);
 
   const properties = (data ?? []) as PropertyRow[];
   const { count: totalProperties } = await supabase.from("properties").select("id", { count: "exact", head: true });
-  const { count: activeProperties } = await supabase.from("properties").select("id", { count: "exact", head: true }).in("listing_type", ["En venta", "En alquiler"]);
+  const { count: activeProperties } = await supabase.from("properties").select("id", { count: "exact", head: true }).eq("is_active", true);
   const { count: featuredProperties } = await supabase.from("properties").select("id", { count: "exact", head: true }).eq("featured", true);
   const totalPages = Math.max(1, Math.ceil((totalProperties ?? 0) / PAGE_SIZE));
   if (page > totalPages && totalProperties) {
@@ -70,7 +71,7 @@ export default async function AdminPropertiesPage({ searchParams }: PageProps) {
           <div className="hidden grid-cols-12 gap-4 border-b border-nordic/5 bg-nordic/[0.02] px-6 py-4 text-xs font-semibold uppercase tracking-wider text-nordic/50 md:grid">
             <div className="col-span-6">Detalles de propiedad</div><div className="col-span-2">Precio</div><div className="col-span-2">Estado</div><div className="col-span-2 text-right">Acciones</div>
           </div>
-          {properties.map((property) => <PropertyAdminRow key={property.id} property={{ id: property.id, slug: property.slug, name: property.name, location: property.location, price: property.price, propertyType: property.property_type, listingType: property.listing_type, imageUrl: property.image_url, featured: property.featured }} />)}
+          {properties.map((property) => <PropertyAdminRow key={property.id} property={{ id: property.id, slug: property.slug, name: property.name, location: property.location, price: property.price, propertyType: property.property_type, listingType: property.listing_type, imageUrl: property.image_url, featured: property.featured, isActive: property.is_active }} />)}
         </section>
         <Pagination page={page} totalPages={totalPages} basePath="/admin/properties" />
       </div>

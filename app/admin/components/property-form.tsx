@@ -1,15 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createProperty, updateProperty } from "../actions";
 import { getSupabaseBrowserClient } from "../../../lib/supabase/client";
+import { FeedbackModal } from "./feedback-modal";
+
+const CoordinateMap = dynamic(() => import("../../components/property-map").then((module) => module.CoordinateMap), { ssr: false });
 
 type PropertyValues = {
   id?: number; slug: string; name: string; location: string; price: number; propertyType: string; listingType: string;
   beds: string; baths: string; bedrooms: number; bathrooms: number; area: string; description: string;
-  imageUrl: string; galleryUrls: string[]; featured: boolean; priceSuffix: string; latitude: number; longitude: number;
+  imageUrl: string; galleryUrls: string[]; featured: boolean; isActive: boolean; priceSuffix: string; latitude: number; longitude: number;
 };
 
 export function PropertyForm({ initial, mode }: { initial?: Partial<PropertyValues>; mode: "create" | "edit" }) {
@@ -18,6 +22,9 @@ export function PropertyForm({ initial, mode }: { initial?: Partial<PropertyValu
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [feedback, setFeedback] = useState<"success" | "error" | null>(null);
+  const [latitude, setLatitude] = useState(String(initial?.latitude ?? 0));
+  const [longitude, setLongitude] = useState(String(initial?.longitude ?? 0));
 
   async function uploadImages(files: FileList | null) {
     if (!files?.length) return;
@@ -43,14 +50,27 @@ export function PropertyForm({ initial, mode }: { initial?: Partial<PropertyValu
     try {
       formData.set("imageUrl", images[0] ?? "");
       formData.set("galleryUrls", JSON.stringify(images));
+      formData.set("isActive", mode === "edit" ? String(formData.get("isActive") === "true") : "true");
       if (mode === "edit") { formData.set("propertyId", String(initial?.id)); await updateProperty(formData); }
       else await createProperty(formData);
-      router.push("/admin/properties");
-      router.refresh();
+      setFeedback("success");
     } catch (actionError) {
       setError(actionError instanceof Error ? actionError.message : "No se pudo guardar la propiedad.");
+      setFeedback("error");
     } finally { setSaving(false); }
   }
+
+  function closeFeedback() {
+    setFeedback(null);
+    if (feedback === "success") {
+      router.push("/admin/properties");
+      router.refresh();
+    }
+  }
+
+  const previewLatitude = Number(latitude);
+  const previewLongitude = Number(longitude);
+  const hasValidCoordinates = Number.isFinite(previewLatitude) && Number.isFinite(previewLongitude) && previewLatitude >= -90 && previewLatitude <= 90 && previewLongitude >= -180 && previewLongitude <= 180;
 
   return (
     <form action={submit} className="grid gap-8 xl:grid-cols-12">
@@ -80,11 +100,13 @@ export function PropertyForm({ initial, mode }: { initial?: Partial<PropertyValu
         </Section>
       </div>
       <aside className="space-y-8 xl:col-span-4">
-        <Section title="Ubicación"><Field label="Dirección" name="location" defaultValue={initial?.location} required /><div className="grid gap-4 grid-cols-2"><Field label="Latitud" name="latitude" type="number" step="0.000001" defaultValue={initial?.latitude ?? 0} required /><Field label="Longitud" name="longitude" type="number" step="0.000001" defaultValue={initial?.longitude ?? 0} required /></div></Section>
-        <Section title="Publicación"><Field label="Slug" name="slug" defaultValue={initial?.slug} required disabled={mode === "edit"} /><Field label="Texto de precio" name="priceSuffix" defaultValue={initial?.priceSuffix} placeholder="por mes" /><label className="flex items-center gap-2 text-sm"><input type="checkbox" name="featured" value="true" defaultChecked={initial?.featured} className="rounded border-nordic/20 text-mosque focus:ring-mosque" /> Marcar como destacada</label></Section>
+        <Section title="Ubicación"><Field label="Dirección" name="location" defaultValue={initial?.location} required /><div className="grid gap-4 grid-cols-2"><label className="block text-sm font-medium"><span className="mb-1.5 block">Latitud <b className="text-red-500"> *</b></span><input name="latitude" type="number" step="0.000001" value={latitude} onChange={(event) => setLatitude(event.target.value)} required className="w-full rounded-lg border border-nordic/10 px-4 py-2.5 text-sm outline-none focus:border-mosque focus:ring-2 focus:ring-mosque/20" /></label><label className="block text-sm font-medium"><span className="mb-1.5 block">Longitud <b className="text-red-500"> *</b></span><input name="longitude" type="number" step="0.000001" value={longitude} onChange={(event) => setLongitude(event.target.value)} required className="w-full rounded-lg border border-nordic/10 px-4 py-2.5 text-sm outline-none focus:border-mosque focus:ring-2 focus:ring-mosque/20" /></label></div>{hasValidCoordinates ? <div className="overflow-hidden rounded-xl border border-[#c8e5f8]"><CoordinateMap latitude={previewLatitude} longitude={previewLongitude} name={initial?.name ?? "Vista previa de propiedad"} className="h-64 w-full" /></div> : <p className="rounded-lg bg-hint/40 p-3 text-xs text-nordic/60">Ingresa coordenadas válidas para previsualizar el mapa.</p>}</Section>
+        <Section title="Publicación"><Field label="Slug" name="slug" defaultValue={initial?.slug} required disabled={mode === "edit"} /><Field label="Texto de precio" name="priceSuffix" defaultValue={initial?.priceSuffix} placeholder="por mes" /><label className="flex items-center gap-2 text-sm"><input type="checkbox" name="featured" value="true" defaultChecked={initial?.featured} className="rounded border-nordic/20 text-mosque focus:ring-mosque" /> Marcar como destacada</label>{mode === "edit" && <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="isActive" value="true" defaultChecked={initial?.isActive ?? true} className="rounded border-nordic/20 text-mosque focus:ring-mosque" /> Mostrar propiedad públicamente</label>}</Section>
         {error && <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
         <div className="flex justify-end gap-3"><Link href="/admin/properties" className="rounded-lg border border-nordic/10 bg-white px-5 py-2.5 text-sm font-medium hover:bg-hint">Cancelar</Link><button type="submit" disabled={saving || uploading} className="rounded-lg bg-mosque px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-mosque/20 transition hover:bg-nordic disabled:opacity-60">{saving ? "Guardando..." : mode === "create" ? "Guardar propiedad" : "Guardar cambios"}</button></div>
       </aside>
+      {feedback === "success" && <FeedbackModal title={mode === "edit" ? "¡Listo!" : "¡Propiedad creada!"} message={mode === "edit" ? "Guardamos tus cambios." : "La propiedad ya está en tu listado."} onClose={closeFeedback} />}
+      {feedback === "error" && <FeedbackModal title="Algo salió mal" message={error} tone="error" onClose={() => setFeedback(null)} />}
     </form>
   );
 }

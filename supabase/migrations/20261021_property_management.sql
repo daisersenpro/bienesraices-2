@@ -1,11 +1,22 @@
 alter table public.properties
   add column if not exists description text not null default '';
 
+alter table public.properties
+  add column if not exists is_active boolean not null default true;
+
+drop policy if exists "Permitir lectura pública de propiedades" on public.properties;
+create policy "Permitir lectura pública de propiedades"
+  on public.properties for select
+  to anon, authenticated
+  using (is_active or public.is_admin());
+
 drop policy if exists "Admins can insert properties" on public.properties;
 create policy "Admins can insert properties"
   on public.properties for insert
   to authenticated
   with check (public.is_admin());
+
+drop policy if exists "Admins can delete properties" on public.properties;
 
 drop policy if exists "Admins can update property images" on public.property_images;
 create policy "Admins can update property images"

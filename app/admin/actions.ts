@@ -43,6 +43,7 @@ export async function updateProperty(formData: FormData) {
   const price = Number(formData.get("price"));
   const listingType = String(formData.get("listingType") ?? "");
   const featured = formData.get("featured") === "true";
+  const isActive = formData.get("isActive") === "true";
   const propertyType = String(formData.get("propertyType") ?? "");
   const description = String(formData.get("description") ?? "");
   const area = String(formData.get("area") ?? "").trim();
@@ -57,14 +58,34 @@ export async function updateProperty(formData: FormData) {
   if (!Number.isInteger(propertyId) || !name || !location || !Number.isFinite(price) || price < 0 || !["En venta", "En alquiler"].includes(listingType) || !["House", "Apartment", "Villa", "Penthouse"].includes(propertyType) || !area || !beds || !baths || !Number.isInteger(bedrooms) || bedrooms < 0 || !Number.isFinite(bathrooms) || bathrooms < 0 || !Number.isFinite(latitude) || !Number.isFinite(longitude) || !imageUrl) {
     throw new Error("Datos de propiedad no válidos.");
   }
+
   const supabase = await requireAdminClient();
-  const { error } = await supabase.from("properties").update({ name, location, price, listing_type: listingType, property_type: propertyType, description, area, beds, baths, bedrooms, bathrooms, latitude, longitude, image_url: imageUrl, featured }).eq("id", propertyId);
+  const { error } = await supabase.from("properties").update({ name, location, price, listing_type: listingType, property_type: propertyType, description, area, beds, baths, bedrooms, bathrooms, latitude, longitude, image_url: imageUrl, featured, is_active: isActive }).eq("id", propertyId);
   if (error) throw new Error(`No se pudo actualizar la propiedad: ${error.message}`);
   await supabase.from("property_images").delete().eq("property_id", propertyId);
   if (galleryUrls.length) {
     const { error: galleryError } = await supabase.from("property_images").insert(galleryUrls.map((url, index) => ({ property_id: propertyId, image_url: url, alt_text: name, sort_order: index, is_primary: index === 0 })));
     if (galleryError) throw new Error(`No se pudo actualizar la galería: ${galleryError.message}`);
   }
+  revalidatePath("/admin/properties");
+}
+
+export async function deactivateProperty(formData: FormData) {
+  const propertyId = Number(formData.get("propertyId"));
+  if (!Number.isInteger(propertyId)) throw new Error("Identificador de propiedad no válido.");
+  const supabase = await requireAdminClient();
+  const { error } = await supabase.from("properties").update({ is_active: false, featured: false }).eq("id", propertyId);
+  if (error) throw new Error(`No se pudo desactivar la propiedad: ${error.message}`);
+  revalidatePath("/admin/properties");
+  revalidatePath("/propiedades", "layout");
+}
+
+export async function activateProperty(formData: FormData) {
+  const propertyId = Number(formData.get("propertyId"));
+  if (!Number.isInteger(propertyId)) throw new Error("Identificador de propiedad no válido.");
+  const supabase = await requireAdminClient();
+  const { error } = await supabase.from("properties").update({ is_active: true }).eq("id", propertyId);
+  if (error) throw new Error(`No se pudo activar la propiedad: ${error.message}`);
   revalidatePath("/admin/properties");
 }
 

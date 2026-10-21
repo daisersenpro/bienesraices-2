@@ -10,7 +10,7 @@ export default async function EditPropertyPage({ params }: { params: Promise<{ i
   await connection();
   const { supabase, user } = await requireAdmin();
   const { id } = await params;
-  const { data, error } = await supabase.from("properties").select("id, slug, name, location, price, property_type, listing_type, beds, baths, bedrooms, bathrooms, area, description, image_url, featured, price_suffix, latitude, longitude, property_images(image_url, sort_order)").eq("id", id).maybeSingle();
+  const { data, error } = await supabase.from("properties").select("id, slug, name, location, price, property_type, listing_type, beds, baths, bedrooms, bathrooms, area, description, image_url, featured, is_active, price_suffix, latitude, longitude, property_images(image_url, sort_order)").eq("id", id).maybeSingle();
   if (error) throw new Error(`No se pudo cargar la propiedad: ${error.message}`);
   if (!data) notFound();
   const row = data as typeof data & { property_images?: Array<{ image_url: string; sort_order: number }> };
@@ -24,7 +24,7 @@ export default async function EditPropertyPage({ params }: { params: Promise<{ i
           <h1 className="text-3xl font-bold tracking-tight md:text-4xl">Editar propiedad</h1>
           <p className="mt-2 text-sm text-nordic/55">Actualiza la información, ubicación y galería.</p>
         </header>
-        <PropertyForm mode="edit" initial={{ id: row.id, slug: row.slug, name: row.name, location: row.location, price: row.price, propertyType: row.property_type, listingType: row.listing_type, beds: row.beds, baths: row.baths, bedrooms: row.bedrooms, bathrooms: row.bathrooms, area: row.area, description: row.description, imageUrl: row.image_url, galleryUrls, featured: row.featured, priceSuffix: row.price_suffix, latitude: row.latitude, longitude: row.longitude }} />
+        <PropertyForm mode="edit" initial={{ id: row.id, slug: row.slug, name: row.name, location: row.location, price: row.price, propertyType: row.property_type, listingType: row.listing_type, beds: row.beds, baths: row.baths, bedrooms: row.bedrooms, bathrooms: row.bathrooms, area: row.area, description: row.description, imageUrl: row.image_url, galleryUrls, featured: row.featured, isActive: row.is_active, priceSuffix: row.price_suffix, latitude: row.latitude, longitude: row.longitude }} />
       </div>
     </main>
   );

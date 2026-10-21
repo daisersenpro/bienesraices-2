@@ -58,6 +58,7 @@ export async function getFeaturedProperties() {
     .from("properties")
     .select("id, slug, name, location, price, price_suffix, property_type, listing_type, beds, baths, area, image_url, label, featured, latitude, longitude")
     .eq("featured", true)
+    .eq("is_active", true)
     .order("created_at", { ascending: false });
 
   if (error) throw new Error(`No se pudieron cargar las destacadas: ${error.message}`);
@@ -92,6 +93,7 @@ export async function getProperties({
     .from("properties")
     .select("id, slug, name, location, price, price_suffix, property_type, listing_type, beds, baths, bedrooms, bathrooms, area, image_url, label, featured, latitude, longitude", { count: "exact" })
     .eq("featured", false)
+    .eq("is_active", true)
     .order("created_at", { ascending: false })
     .range(from, to);
 
@@ -121,6 +123,7 @@ export async function getPropertyBySlug(slug: string) {
     .from("properties")
     .select("id, slug, name, location, price, price_suffix, property_type, listing_type, beds, baths, area, image_url, label, featured, latitude, longitude, property_images(id, image_url, alt_text, sort_order, is_primary)")
     .eq("slug", slug)
+    .eq("is_active", true)
     .maybeSingle();
 
   if (error) throw new Error(`No se pudo cargar la propiedad: ${error.message}`);

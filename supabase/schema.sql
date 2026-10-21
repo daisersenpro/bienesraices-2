@@ -16,6 +16,7 @@ create table if not exists public.properties (
   image_url text not null,
   label text,
   featured boolean not null default false,
+  is_active boolean not null default true,
   latitude numeric(9, 6),
   longitude numeric(9, 6),
   created_at timestamptz not null default now()
@@ -37,7 +38,7 @@ drop policy if exists "Permitir lectura pública de propiedades" on public.prope
 create policy "Permitir lectura pública de propiedades"
   on public.properties for select
   to anon, authenticated
-  using (true);
+  using (is_active or public.is_admin());
 
 create index if not exists properties_featured_created_idx
   on public.properties (featured desc, created_at desc);
