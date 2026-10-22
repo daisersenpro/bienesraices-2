@@ -26,7 +26,10 @@ El home consulta las propiedades desde Supabase mediante funciones servidor de N
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://TU_PROJECT_REF.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=tu_clave_publishable
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
+
+En producción, configura `NEXT_PUBLIC_SITE_URL` con la URL pública real de la aplicación. Esta variable se usa para generar URLs canónicas y metadatos Open Graph/Twitter absolutos al compartir propiedades.
 
 El esquema de la tabla y sus políticas está en [`supabase/schema.sql`](./supabase/schema.sql). La página principal usa paginación server-side con los parámetros `page`, `tipo` y `busqueda`; por ejemplo, `/?page=2&tipo=House`.
 

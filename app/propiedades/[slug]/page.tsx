@@ -21,9 +21,30 @@ export async function generateMetadata({ params }: PropertyPageProps): Promise<M
   const property = await getPropertyBySlug(slug);
   if (!property) return { title: "Propiedad no encontrada | Casas SenPro" };
 
+  const description = `${property.name} en ${property.location}. ${formatPrice(property.price)}.`;
+  const imageUrls = property.images?.map((image) => image.url).filter(Boolean) ?? [];
+  if (!imageUrls.length && property.image) imageUrls.push(property.image);
+
   return {
     title: `${property.name} | Casas SenPro`,
-    description: `${property.name} en ${property.location}. ${formatPrice(property.price)}.`,
+    description,
+    alternates: {
+      canonical: `/propiedades/${property.slug}`,
+    },
+    openGraph: {
+      type: "article",
+      siteName: "Casas SenPro",
+      title: `${property.name} | Casas SenPro`,
+      description,
+      url: `/propiedades/${property.slug}`,
+      images: imageUrls.map((url) => ({ url, alt: property.name })),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${property.name} | Casas SenPro`,
+      description,
+      images: imageUrls,
+    },
   };
 }
 
